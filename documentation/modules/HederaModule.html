@@ -158,7 +158,7 @@
             <tr>
                 <td class="col-md-4">
                     <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>forRootAsync(options: <a href="../interfaces/HederaOptions.html" target="_self">HederaOptions</a>)</code>
+                    <code>forRootAsync(options: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
                 </td>
             </tr>
 
@@ -189,7 +189,7 @@
                                 <tr>
                                     <td>options</td>
                                     <td>
-                                                <code><a href="../interfaces/HederaOptions.html" target="_self" >HederaOptions</a></code>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
                                     </td>
 
                                     <td>
@@ -264,7 +264,7 @@ export class HederaModule {
     }
   }
 
-  static forRootAsync(options: HederaOptions): DynamicModule {
+  static forRootAsync(options: any): DynamicModule {
     return {
       module: HederaModule,
       imports: [

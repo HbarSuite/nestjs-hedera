@@ -32,7 +32,117 @@
                    <div class="content-data">
 
 <h1 id="hsuite---hedera-for-nestjs">HSuite - Hedera for NestJS</h1>
+<p>An hedera-js-sdk wrapper for NestJS.</p>
+<h2 id="installation">Installation</h2>
+<p>If you use npm, you shall run:</p>
+<div><pre class="line-numbers"><code class="language-bash">npm install hsuite-nestjs-hedera</code></pre></div><p>instead, if you use yarn:</p>
+<div><pre class="line-numbers"><code class="language-bash">yarn add hsuite-nestjs-hedera</code></pre></div><h2 id="import-into-your-appmodule">Import into your AppModule</h2>
+<p>First you need to import the HederaModule into your app.module.ts.
+You can use the forRoot method in order to pass the needed variables to create the Hedera Client and to connect to a Mirror Node, like this:</p>
+<div><pre class="line-numbers"><code class="language-js">import { Module } from &#39;&#64;nestjs/common&#39;;
+import { AppController } from &#39;./app.controller&#39;;
+import { AppService } from &#39;./app.service&#39;;
+import { HederaModule } from &#39;hsuite-nestjs-hedera/lib&#39;;
 
+&#64;Module({
+  imports: [
+    HederaModule.forRoot({
+      operators: [
+          {
+            accountId: &#39;YOUR_OPERATOR_ACCOUNT_ID&#39;, 
+            privateKey: &#39;YOUR_OPERATOR_PRIVATE_KEY&#39;
+          }
+        ], 
+        mirrorNode: {
+          url: &#39;https://mainnet-public.mirrornode.hedera.com&#39;
+        }, 
+        network: &#39;mainnet&#39;
+      }),
+  ],
+  controllers: [AppController],
+  providers: [AppService]
+})
+export class AppModule {}</code></pre></div><p>You can also use NestJS ConfigService, to protect your keys by calling the forRootAsync method, like this:</p>
+<div><pre class="line-numbers"><code class="language-js">HederaModule.forRootAsync({
+  imports: [ConfigModule],
+  useExisting: ConfigService,
+  useFactory: async (configService: ConfigService) =&gt; ({
+    operators: configService.get&lt;Array&lt;Operator&gt;&gt;(`operators`),
+    mirrorNode: configService.get&lt;MirrorNode&gt;(`mirrorNode`),
+    network: configService.get&lt;string&gt;(&#39;network&#39;)
+  }),
+}),</code></pre></div><h2 id="usage">Usage</h2>
+<p>Once imported, you can then import the service you need, and use it.
+For example:</p>
+<div><pre class="line-numbers"><code class="language-js">import { Injectable } from &#39;&#64;nestjs/common&#39;;
+import { KeysService } from &#39;hsuite-nestjs-hedera/lib/hedera/keys/keys.service&#39;;
+import { HcsService } from &#39;hsuite-nestjs-hedera/lib/hedera/hcs/hcs.service&#39;;
+import { HfsService } from &#39;hsuite-nestjs-hedera/lib/hedera/hfs/hfs.service&#39;;
+import { AccountsService } from &#39;hsuite-nestjs-hedera/lib/hedera/accounts/accounts.service&#39;;
+import { TransactionsRestService } from &#39;hsuite-nestjs-hedera/lib/hedera/transactions/transactions-rest.service&#39;;
+import { TopicId, PrivateKey } from &#39;&#64;hashgraph/sdk&#39;;
+
+&#64;Injectable()
+export class AppService {
+  constructor(
+    private keysService: KeysService,
+    private hcsService: HcsService,
+    private hfsService: HfsService,
+    private transactionsService: TransactionsRestService,
+    private accountsService: AccountsService
+  ) {
+    // creating an hedera account...
+    this.accountsService.createAccount(1, 1).then(account =&gt; {
+      console.log(&quot;account generated&quot;, account.key.toString());
+      // generating a new private key...
+      this.keysService.generateKey().then(key =&gt; {
+        // updating the account with the new generated private key...
+        this.accountsService.updateAccount(
+          account.accountId, 
+          PrivateKey.fromString(account.key.toString()),
+          key).then(response =&gt; {
+            console.log(response);
+          }).catch(error =&gt; {
+            console.error(error);
+          });
+      }).catch(error =&gt; {
+        console.error(error);
+      });
+    }).catch(error =&gt; {
+      console.error(error);
+    })
+
+    // fetching latest transactions from mirror node for a given accountId...
+    this.transactionsService.getLatestTransactions(&#39;YOUR_ACCOUNT_ID_HERE&#39;).then(response =&gt; {
+      console.log(response);
+    }).catch(error =&gt; {
+      console.error(error);
+    });
+
+    // subscribing to a HCS Topic...
+    this.hcsService.getMessages(
+      TopicId.fromString(&#39;YOUR_HCS_TOPIC_ID_HERE&#39;),
+      async(message) =&gt; {
+        let hcsMessage = JSON.parse(Buffer.from(message.contents).toString());
+        console.log(hcsMessage);
+      }
+      ).then(() =&gt; {
+        console.log(&quot;subscribed&quot;);
+      }).catch(error =&gt; {
+        console.error(error);
+      })
+
+    // creating an HFS file...
+    this.hfsService.create(
+      PrivateKey.fromString(&#39;YOUR_PRIVATE_KEY_HERE&#39;),
+      &#39;YOUR_CONTENT_HERE&#39;
+    ).then((response) =&gt; {
+      console.log(response);
+    }).catch(error =&gt; {
+      console.error(error);
+    })
+  }
+}</code></pre></div>
 
 
 

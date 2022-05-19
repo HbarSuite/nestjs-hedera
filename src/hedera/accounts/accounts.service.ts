@@ -21,24 +21,44 @@ import { PrivateKeyList } from '../../types/private-key-list.types';
 
 @Injectable()
 export class AccountsService {
+  /**
+   * Logger Service
+   */
   protected logger: Logger = new Logger("Accounts Service");
 
+  /**
+   * Constructor
+   * @param {ClientService} clientService 
+   * @param {KeysService} keysService 
+   */
   constructor(
     private clientService: ClientService,
     private keysService: KeysService
   ) {}
 
+  /**
+   * Fetches specific Account Info
+   * @param {AccountId} accountId 
+   * @returns {AccountInfo}
+   */
   async getInfo(accountId: AccountId): Promise<AccountInfo> {
     return new Promise(async(resolve, reject) => {
       try {
-        // Creating the transaction...
+        /**
+         * Creating the transaction...
+         */
         const transaction = new AccountInfoQuery()
             .setAccountId(accountId);
 
-        // Signing the transaction...
+
+        /**
+         * Signing the transaction...
+         */
         const accountInfo = await transaction.execute(this.clientService.getClient());
 
-        // resolving the account's info...
+        /**
+         * resolving the account's info...
+         */
         resolve(accountInfo);        
       } catch(error) {
         reject(error);
@@ -46,6 +66,11 @@ export class AccountsService {
     });
   }
 
+  /**
+   * Fetches Specific account public key
+   * @param {AccountId} accountId 
+   * @returns {any} Account Public Key
+   */
   async getKeys(accountId: AccountId): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -57,6 +82,14 @@ export class AccountsService {
     });
   }
 
+  /**
+   * Updates Account
+   * @param {AccountId} accountId 
+   * @param {PrivateKey} signKey 
+   * @param {PrivateKey} newKey 
+   * @param {string} memo 
+   * @returns {Status} Account Update
+   */
   async updateAccount(
     accountId: AccountId,
     signKey: PrivateKey,
@@ -65,36 +98,54 @@ export class AccountsService {
   ): Promise<Status> {
     return new Promise(async(resolve,reject) => {
       try {
-        // Creating the transaction...
+        /**
+         * Creating the transaction...
+         */
         const transaction = await new AccountUpdateTransaction()
-            // setting single node accountId, as a workound for offline signature...
+         /**
+         * setting single node accountId, as a workound for offline signature...
+         */
             .setNodeAccountIds([new AccountId(6)])    
             .setAccountId(accountId);
 
+            /**
+             * If there is a memo...
+             */
         if(memo) {
           transaction.setAccountMemo(memo);
         }
 
+        /**
+         * If there is a new key...
+         */
         if(newKey) {
           transaction.setKey(newKey);
         }
 
         transaction.freezeWith(this.clientService.getClient());
 
-        // Signing the transaction...
+        /**
+         * Signing the transaction...
+         */
         let signTx = await transaction.sign(signKey);
 
         if(newKey) {
           signTx = await signTx.sign(newKey);
         }
 
-        // Signing the transaction with the client operator...
+        /**
+         * Signing the transaction with the client operator...
+         */
         const txResponse = await signTx.execute(this.clientService.getClient());
 
-        // Request the receipt of the transaction...
+        /**
+         * Request the receipt of the transaction...
+         */
         const receipt = await txResponse.getReceipt(this.clientService.getClient());
 
-        // Get the transaction consensus status...
+        /**
+         * Get the transaction consensus status...
+         */
         resolve(receipt.status);
       } catch(error) {
         reject(error);
@@ -102,6 +153,13 @@ export class AccountsService {
     });
   }
 
+  /**
+   * Creates a single or multi-sig account
+   * @param {number} balance 
+   * @param {number} keysLength 
+   * @param {number} keysThreshold 
+   * @returns {AccountId, PrivateKey} single or multi-sig account
+   */
   async createAccount(
     balance: number,
     keysLength: number,
@@ -117,18 +175,26 @@ export class AccountsService {
           key = await this.keysService.generateKey();
         }
 
-        //Creating the transaction...
+        /**
+         * Creating the transaction...
+         */
         const transaction = new AccountCreateTransaction()
             .setKey(keysLength > 1 ? (<PrivateKeyList>key).keyList : (<PrivateKey>key).publicKey)
             .setInitialBalance(new Hbar(balance));
 
-        // Executing the transactions...
+        /**
+         * Executing the transactions...
+         */
         const txResponse = await transaction.execute(this.clientService.getClient());
 
-        // Fetching the receipt...
+        /**
+         * Fetching the receipt...
+         */
         const receipt = await txResponse.getReceipt(this.clientService.getClient());
 
-        // resolving the accountId...
+        /**
+         * resolving the accountId...
+         */
         resolve({
           accountId: receipt.accountId,
           key: key
@@ -139,6 +205,13 @@ export class AccountsService {
     });
   }
 
+  /**
+   * Freezes account related to token ID
+   * @param {AccountId} accountId 
+   * @param {TokenId} tokenId 
+   * @param {string} freezeKey 
+   * @returns {Status}
+   */
   async freezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -160,6 +233,13 @@ export class AccountsService {
     });
   }
 
+  /**
+   * Unfreezes account related to token ID
+   * @param {AccountId} accountId 
+   * @param {TokenId} tokenId 
+   * @param {string} freezeKey 
+   * @returns {Status}
+   */
   async unfreezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -181,6 +261,12 @@ export class AccountsService {
     });
   }
 
+  /**
+   * 
+   * @param {string} accountId 
+   * @param {string} tokenId 
+   * @returns {AccountBalance}
+   */
   getQueryBalance(accountId: string | AccountId, tokenId?: string): Promise<AccountBalance> {
     return new Promise(async (resolve, reject) => {
       try {

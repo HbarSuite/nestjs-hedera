@@ -6,23 +6,34 @@ import { HederaOptions } from '../../types/hedera_options.types';
 
 @Injectable()
 export class ClientService {
+
   private client: Client;
   private operator: Operator;
   private operators: Array<Operator>;
   private network: 'mainnet' | 'testnet';
   private logger: Logger = new Logger("Client Service");
 
+  /**
+   * Hedera Network variables
+   * @param {HederaOptions} hederaOptions 
+   */
   constructor(
     @Inject('hederaOptions') private hederaOptions: HederaOptions
   ) {
     this.network = this.hederaOptions.network;
     this.operators = this.hederaOptions.operators;
     
-    // Create our connection to the Hedera network...
+    /**
+     * Create our connection to the Hedera network...
+     */
     this.client = this.getClient();
     this.operator = this.getNodeOperator();
   }
 
+  /**
+   * If the client gives invalid node error...
+   * @returns random operator...
+   */
   @OnEvent('client.invalid_node_operator')
   getClient(): Client {
     if (this.network == 'testnet') {
@@ -36,6 +47,10 @@ export class ClientService {
     return this.client;
   }
 
+  /**
+   * Gets a node operator
+   * @returns {Operator}
+   */
   getNodeOperator(): Operator {
     return this.operator;
   }  

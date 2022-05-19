@@ -138,12 +138,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/hedera/client/client.service.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/hedera/client/client.service.ts:14</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Hedera Network variables</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -208,17 +210,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="27"
-                            class="link-to-prism">src/hedera/client/client.service.ts:27</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="38"
+                            class="link-to-prism">src/hedera/client/client.service.ts:38</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>If the client gives invalid node error...</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>    <code>Client</code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>random operator...</p>
 
                     </div>
                 </td>
@@ -245,18 +255,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="39"
-                            class="link-to-prism">src/hedera/client/client.service.ts:39</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="54"
+                            class="link-to-prism">src/hedera/client/client.service.ts:54</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Gets a node operator</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../interfaces/Operator.html" target="_self" >Operator</a></code>
 
+                    </div>
+                    <div class="io-description">
+                        
                     </div>
                 </td>
             </tr>
@@ -288,7 +305,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/hedera/client/client.service.ts:9</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/hedera/client/client.service.ts:10</a></div>
                         </td>
                     </tr>
 
@@ -320,7 +337,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/hedera/client/client.service.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/hedera/client/client.service.ts:14</a></div>
                         </td>
                     </tr>
 
@@ -347,7 +364,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/hedera/client/client.service.ts:12</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/hedera/client/client.service.ts:13</a></div>
                         </td>
                     </tr>
 
@@ -374,7 +391,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/hedera/client/client.service.ts:10</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/hedera/client/client.service.ts:11</a></div>
                         </td>
                     </tr>
 
@@ -401,7 +418,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/hedera/client/client.service.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/hedera/client/client.service.ts:12</a></div>
                         </td>
                     </tr>
 
@@ -422,23 +439,34 @@ import { HederaOptions } from &#x27;../../types/hedera_options.types&#x27;;
 
 @Injectable()
 export class ClientService {
+
   private client: Client;
   private operator: Operator;
   private operators: Array&lt;Operator&gt;;
   private network: &#x27;mainnet&#x27; | &#x27;testnet&#x27;;
   private logger: Logger &#x3D; new Logger(&quot;Client Service&quot;);
 
+  /**
+   * Hedera Network variables
+   * @param {HederaOptions} hederaOptions 
+   */
   constructor(
     @Inject(&#x27;hederaOptions&#x27;) private hederaOptions: HederaOptions
   ) {
     this.network &#x3D; this.hederaOptions.network;
     this.operators &#x3D; this.hederaOptions.operators;
     
-    // Create our connection to the Hedera network...
+    /**
+     * Create our connection to the Hedera network...
+     */
     this.client &#x3D; this.getClient();
     this.operator &#x3D; this.getNodeOperator();
   }
 
+  /**
+   * If the client gives invalid node error...
+   * @returns random operator...
+   */
   @OnEvent(&#x27;client.invalid_node_operator&#x27;)
   getClient(): Client {
     if (this.network &#x3D;&#x3D; &#x27;testnet&#x27;) {
@@ -452,6 +480,10 @@ export class ClientService {
     return this.client;
   }
 
+  /**
+   * Gets a node operator
+   * @returns {Operator}
+   */
   getNodeOperator(): Operator {
     return this.operator;
   }  
