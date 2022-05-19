@@ -410,7 +410,7 @@ export class HtsRestService {
    */
   constructor(
     private restService: RestService
-  ) {}
+  ) { }
 
   /**
    * Get Token Info
@@ -418,13 +418,13 @@ export class HtsRestService {
    * @returns {any} response
    */
   getTokenInfo(tokenId: string): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let response &#x3D; await this.restService
-        .call(&#x60;tokens/${tokenId}&#x60;);
+          .call(&#x60;tokens/${tokenId}&#x60;);
 
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -436,16 +436,16 @@ export class HtsRestService {
    * @returns {Array}
    */
   getAllHolders(tokenId: string): Promise&lt;Array&lt;any&gt;&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let holders: any &#x3D; [];
 
         let response &#x3D; await this.restService
-        .call(&#x60;tokens/${tokenId}/balances&#x60;);
+          .call(&#x60;tokens/${tokenId}/balances&#x60;);
 
         holders &#x3D; holders.concat(response.balances);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let next &#x3D; lodash.get(response.links.next.split(&quot;?&quot;), 1);
 
           response &#x3D; await this.restService
@@ -455,7 +455,7 @@ export class HtsRestService {
         }
 
         resolve(holders);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -468,16 +468,16 @@ export class HtsRestService {
    * @returns {Array}
    */
   getAllHoldersFromWallet(tokenId: string, walletId: string): Promise&lt;Array&lt;any&gt;&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let holders: any &#x3D; [];
 
         let response &#x3D; await this.restService
-        .call(&#x60;tokens/${tokenId}/balances?account.id&#x3D;gt:${walletId}&#x60;);
+          .call(&#x60;tokens/${tokenId}/balances?account.id&#x3D;gt:${walletId}&#x60;);
 
         holders &#x3D; holders.concat(response.balances);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let next &#x3D; lodash.get(response.links.next.split(&quot;?&quot;), 1);
 
           response &#x3D; await this.restService
@@ -487,7 +487,7 @@ export class HtsRestService {
         }
 
         resolve(holders);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });

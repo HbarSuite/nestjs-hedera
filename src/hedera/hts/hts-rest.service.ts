@@ -14,7 +14,7 @@ export class HtsRestService {
    */
   constructor(
     private restService: RestService
-  ) {}
+  ) { }
 
   /**
    * Get Token Info
@@ -22,13 +22,13 @@ export class HtsRestService {
    * @returns {any} response
    */
   getTokenInfo(tokenId: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let response = await this.restService
-        .call(`tokens/${tokenId}`);
+          .call(`tokens/${tokenId}`);
 
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -40,16 +40,16 @@ export class HtsRestService {
    * @returns {Array}
    */
   getAllHolders(tokenId: string): Promise<Array<any>> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let holders: any = [];
 
         let response = await this.restService
-        .call(`tokens/${tokenId}/balances`);
+          .call(`tokens/${tokenId}/balances`);
 
         holders = holders.concat(response.balances);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let next = lodash.get(response.links.next.split("?"), 1);
 
           response = await this.restService
@@ -59,7 +59,7 @@ export class HtsRestService {
         }
 
         resolve(holders);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -72,16 +72,16 @@ export class HtsRestService {
    * @returns {Array}
    */
   getAllHoldersFromWallet(tokenId: string, walletId: string): Promise<Array<any>> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let holders: any = [];
 
         let response = await this.restService
-        .call(`tokens/${tokenId}/balances?account.id=gt:${walletId}`);
+          .call(`tokens/${tokenId}/balances?account.id=gt:${walletId}`);
 
         holders = holders.concat(response.balances);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let next = lodash.get(response.links.next.split("?"), 1);
 
           response = await this.restService
@@ -91,7 +91,7 @@ export class HtsRestService {
         }
 
         resolve(holders);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
