@@ -58,9 +58,6 @@ export class KeysService {
             publicKeyList.push(PublicKey.fromString(key));
           });
 
-          /**
-           * Get the key list...
-           */
           resolve({
             privateKeys: [],
             keyList: new KeyList(publicKeyList, threshold ? threshold : null)
