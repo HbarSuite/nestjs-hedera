@@ -1,12 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { RestService } from '../rest/rest.service';
 
+/**
+ * Injectable
+ */
 @Injectable()
 export class TransactionsRestService {
+
+  /**
+   * Transaction Rest Service
+   * @param {RestService} restService 
+   */
   constructor(
     private restService: RestService
   ) {}
 
+  /**
+   * Fetch all transactions from timestamp
+   * @param {string} timestamp 
+   * @param {string} accountId 
+   * @returns {any} response
+   */
   getAllTransactionsFromTimestamp(timestamp: string, accountId: string):  Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -36,6 +50,12 @@ export class TransactionsRestService {
     });
   }
 
+  /**
+   * Fetch all transactions
+   * @param {string} accountId 
+   * @param {string} filters 
+   * @returns {any} response
+   */
   getAllTransactions(accountId: string, filters?: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -70,6 +90,11 @@ export class TransactionsRestService {
     });
   }
 
+  /**
+   * Fetch latest transactions
+   * @param {string} accountId 
+   * @returns {any} response
+   */
   getLatestTransactions(accountId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -83,6 +108,11 @@ export class TransactionsRestService {
     });
   }
 
+  /**
+   * Fetch scheduled transaction
+   * @param {string} transactionId 
+   * @returns {any} response
+   */
   getScheduledTransaction(transactionId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {

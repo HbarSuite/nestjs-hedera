@@ -383,26 +383,26 @@ export class RestService {
    * @returns {any}
    */
   async call(endpoint: string): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let headers &#x3D; {};
 
-        if(this.mirrorNode.apiKey) {
+        if (this.mirrorNode.apiKey) {
           headers &#x3D; {
             &#x27;authorization&#x27;: this.mirrorNode.apiKey
           }
         }
 
         let response &#x3D; await this.httpService
-        .get(
-          &#x60;${this.mirrorNode.url}/api/v1/${endpoint}&#x60;,
-          { headers: headers }).toPromise();
-  
+          .get(
+            &#x60;${this.mirrorNode.url}/api/v1/${endpoint}&#x60;,
+            { headers: headers }).toPromise();
+
         resolve(response?.data);
-      } catch(error) {
+      } catch (error) {
         reject(error);
-      }      
-    });   
+      }
+    });
   }
 }
 </code></pre>
