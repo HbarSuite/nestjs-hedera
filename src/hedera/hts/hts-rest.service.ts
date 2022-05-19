@@ -2,12 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { RestService } from '../rest/rest.service';
 import * as lodash from 'lodash';
 
+/**
+ * Injectable
+ */
 @Injectable()
 export class HtsRestService {
+
+  /**
+   * HTS REST Service
+   * @param restService 
+   */
   constructor(
     private restService: RestService
   ) {}
 
+  /**
+   * Get Token Info
+   * @param {string} tokenId 
+   * @returns {any} response
+   */
   getTokenInfo(tokenId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -21,6 +34,11 @@ export class HtsRestService {
     });
   }
 
+  /**
+   * Get array of holders by tokenId
+   * @param {string} tokenId 
+   * @returns {Array}
+   */
   getAllHolders(tokenId: string): Promise<Array<any>> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -47,6 +65,12 @@ export class HtsRestService {
     });
   }
 
+  /**
+   * Get array of holders from walletId
+   * @param {string} tokenId 
+   * @param {string} walletId 
+   * @returns {Array}
+   */
   getAllHoldersFromWallet(tokenId: string, walletId: string): Promise<Array<any>> {
     return new Promise(async(resolve, reject) => {
       try {
