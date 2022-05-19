@@ -7,10 +7,29 @@ import { HederaOptions } from '../../types/hedera_options.types';
 @Injectable()
 export class ClientService {
 
+  /**
+   * Client
+   */
   private client: Client;
+
+  /**
+   * Single Operator
+   */
   private operator: Operator;
+
+  /**
+   * Array of Operators
+   */
   private operators: Array<Operator>;
+
+  /**
+   * Network choice
+   */
   private network: 'mainnet' | 'testnet';
+
+  /**
+   * Logger Service
+   */
   private logger: Logger = new Logger("Client Service");
 
   /**
