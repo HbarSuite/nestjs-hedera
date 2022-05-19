@@ -62,6 +62,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Injectable</p>
+
+            </p>
 
 
 
@@ -122,10 +129,16 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/hedera/keys/keys.service.ts:7</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/hedera/keys/keys.service.ts:14</a></div>
                             </td>
                         </tr>
 
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>KeyService class</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
 </section>
@@ -155,18 +168,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="13"
-                            class="link-to-prism">src/hedera/keys/keys.service.ts:13</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="26"
+                            class="link-to-prism">src/hedera/keys/keys.service.ts:26</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Generate Private Key</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>    <code>Promise&lt;PrivateKey&gt;</code>
 
+                    </div>
+                    <div class="io-description">
+                        
                     </div>
                 </td>
             </tr>
@@ -192,14 +212,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="24"
-                            class="link-to-prism">src/hedera/keys/keys.service.ts:24</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="44"
+                            class="link-to-prism">src/hedera/keys/keys.service.ts:44</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Generate a list of Keys</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -296,10 +318,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/hedera/keys/keys.service.ts:7</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/hedera/keys/keys.service.ts:14</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Logger Service</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -313,49 +341,78 @@
 import { PrivateKey, KeyList, PublicKey } from &#x27;@hashgraph/sdk&#x27;;
 import { PrivateKeyList } from &#x27;../../types/private-key-list.types&#x27;;
 
+/**
+ * Injectable
+ */
 @Injectable()
 export class KeysService {
+
+  /**
+   * Logger Service
+   */
   protected logger: Logger &#x3D; new Logger(&quot;Keys Service&quot;);
 
+  /**
+   * KeyService class
+   */
   constructor() {
-    // KeyService Class
   }
 
+  /**
+   * Generate Private Key
+   * @returns {PrivateKey}
+   */
   generateKey(): Promise&lt;PrivateKey&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         const key &#x3D; await PrivateKey.generate();
         resolve(key);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
   }
 
+  /**
+   * Generate a list of Keys
+   * @param {string} publicKeys 
+   * @param {number} length 
+   * @param {number} threshold 
+   * @returns {PrivateKeyList} 
+   */
   generateKeyList(
     publicKeys?: string[],
     length?: number,
     threshold?: number
   ): Promise&lt;PrivateKeyList&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let publicKeyList: any &#x3D; [];
-        // if an array of keys is provided, we use it...
-        if(publicKeys) {
+
+        /**
+         * If an array of keys is provided, we use it...
+         */
+        if (publicKeys) {
           publicKeys.forEach(key &#x3D;&gt; {
             publicKeyList.push(PublicKey.fromString(key));
           });
 
+          /**
+           * Get the key list...
+           */
           resolve({
-            privateKeys: [], 
-            keyList: new KeyList(publicKeyList, threshold? threshold : null)
-          });          
+            privateKeys: [],
+            keyList: new KeyList(publicKeyList, threshold ? threshold : null)
+          });
         }
-        // otherwise, we generate the keys we need...
+
+        /**
+         * Otherwise, we generate the keys we need...
+         */
         else {
           let privateKeys: any &#x3D; [];
 
-          if(length) {
+          if (length) {
             [...Array(length).keys()].forEach(() &#x3D;&gt; {
               let key &#x3D; PrivateKey.generate();
               privateKeys.push(key);
@@ -363,17 +420,17 @@ export class KeysService {
             });
 
             resolve({
-              privateKeys: privateKeys, 
-              keyList: new KeyList(publicKeyList, threshold? threshold : null)
+              privateKeys: privateKeys,
+              keyList: new KeyList(publicKeyList, threshold ? threshold : null)
             });
           } else {
             resolve({
-              privateKeys: [], 
+              privateKeys: [],
               keyList: new KeyList([])
             });
           }
         }
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });

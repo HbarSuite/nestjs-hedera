@@ -2,49 +2,78 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrivateKey, KeyList, PublicKey } from '@hashgraph/sdk';
 import { PrivateKeyList } from '../../types/private-key-list.types';
 
+/**
+ * Injectable
+ */
 @Injectable()
 export class KeysService {
+
+  /**
+   * Logger Service
+   */
   protected logger: Logger = new Logger("Keys Service");
 
+  /**
+   * KeyService class
+   */
   constructor() {
-    // KeyService Class
   }
 
+  /**
+   * Generate Private Key
+   * @returns {PrivateKey}
+   */
   generateKey(): Promise<PrivateKey> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const key = await PrivateKey.generate();
         resolve(key);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
   }
 
+  /**
+   * Generate a list of Keys
+   * @param {string} publicKeys 
+   * @param {number} length 
+   * @param {number} threshold 
+   * @returns {PrivateKeyList} 
+   */
   generateKeyList(
     publicKeys?: string[],
     length?: number,
     threshold?: number
   ): Promise<PrivateKeyList> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let publicKeyList: any = [];
-        // if an array of keys is provided, we use it...
-        if(publicKeys) {
+
+        /**
+         * If an array of keys is provided, we use it...
+         */
+        if (publicKeys) {
           publicKeys.forEach(key => {
             publicKeyList.push(PublicKey.fromString(key));
           });
 
+          /**
+           * Get the key list...
+           */
           resolve({
-            privateKeys: [], 
-            keyList: new KeyList(publicKeyList, threshold? threshold : null)
-          });          
+            privateKeys: [],
+            keyList: new KeyList(publicKeyList, threshold ? threshold : null)
+          });
         }
-        // otherwise, we generate the keys we need...
+
+        /**
+         * Otherwise, we generate the keys we need...
+         */
         else {
           let privateKeys: any = [];
 
-          if(length) {
+          if (length) {
             [...Array(length).keys()].forEach(() => {
               let key = PrivateKey.generate();
               privateKeys.push(key);
@@ -52,17 +81,17 @@ export class KeysService {
             });
 
             resolve({
-              privateKeys: privateKeys, 
-              keyList: new KeyList(publicKeyList, threshold? threshold : null)
+              privateKeys: privateKeys,
+              keyList: new KeyList(publicKeyList, threshold ? threshold : null)
             });
           } else {
             resolve({
-              privateKeys: [], 
+              privateKeys: [],
               keyList: new KeyList([])
             });
           }
         }
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
