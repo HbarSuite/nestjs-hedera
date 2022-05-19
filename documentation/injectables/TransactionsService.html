@@ -62,6 +62,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Injectable</p>
+
+            </p>
 
 
 
@@ -136,12 +143,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/hedera/transactions/transactions.service.ts:20</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/hedera/transactions/transactions.service.ts:27</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Transactions Service</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -201,14 +210,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="80"
-                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:80</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="121"
+                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:121</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Create scheduled transaction</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -272,14 +283,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="102"
-                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:102</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="157"
+                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:157</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Get scheduled transaction</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -315,7 +328,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>info</p>
+
                     </div>
                 </td>
             </tr>
@@ -343,14 +357,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="26"
-                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:26</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="42"
+                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:42</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Fetch transaction record query</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -386,7 +402,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>receipt</p>
+
                     </div>
                 </td>
             </tr>
@@ -414,14 +431,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="41"
-                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:41</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="62"
+                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:62</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Fetch transaction receipt</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -457,7 +476,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>receipt</p>
+
                     </div>
                 </td>
             </tr>
@@ -485,14 +505,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="57"
-                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:57</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="84"
+                            class="link-to-prism">src/hedera/transactions/transactions.service.ts:84</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Sign scheduled transaction</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -577,10 +599,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/hedera/transactions/transactions.service.ts:20</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/hedera/transactions/transactions.service.ts:27</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Logger Service</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -592,76 +620,112 @@
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, Logger } from &#x27;@nestjs/common&#x27;;
 import { ClientService } from &#x27;../client/client.service&#x27;;
-import { 
-  PrivateKey, 
-  ScheduleCreateTransaction, 
-  ScheduleId, 
-  ScheduleInfoQuery, 
-  ScheduleSignTransaction, 
-  Status, 
-  Transaction, 
-  TransactionId, 
-  TransactionReceipt, 
+import {
+  PrivateKey,
+  ScheduleCreateTransaction,
+  ScheduleId,
+  ScheduleInfoQuery,
+  ScheduleSignTransaction,
+  Status,
+  Transaction,
+  TransactionId,
+  TransactionReceipt,
   TransactionReceiptQuery,
-  TransactionRecordQuery, 
-  TransactionResponse 
+  TransactionRecordQuery,
+  TransactionResponse
 } from &#x27;@hashgraph/sdk&#x27;;
 
+/**
+ * Injectable
+ */
 @Injectable()
 export class TransactionsService {
+
+  /**
+   * Logger Service
+   */
   protected logger: Logger &#x3D; new Logger(&quot;Transactions Service&quot;);
 
+  /**
+   * Transactions Service
+   * @param {ClientService} clientService 
+   */
   constructor(
     private clientService: ClientService
-  ) {}
+  ) { }
 
+  /**
+   * Fetch transaction record query
+   * @param {TransactionId} transactionId 
+   * @returns {any} receipt
+   */
   async getTransactionQuery(transactionId: TransactionId): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let transaction &#x3D; new TransactionRecordQuery()
-        .setTransactionId(transactionId)
-        .setIncludeDuplicates(true);
+          .setTransactionId(transactionId)
+          .setIncludeDuplicates(true);
 
         let receipt &#x3D; await transaction.execute(this.clientService.getClient());
         resolve(receipt);
-      } catch(error: any) {
-        reject(error);
-      }
-    });
-  }  
-
-  async getTransactionReceipt(transactionId: TransactionId): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
-      try {
-        let transaction &#x3D; new TransactionReceiptQuery()
-        .setTransactionId(transactionId)
-        .setIncludeDuplicates(true)
-        .setIncludeChildren(true);
-
-        let receipt &#x3D; await transaction.execute(this.clientService.getClient());
-        resolve(receipt);
-      } catch(error) {
+      } catch (error: any) {
         reject(error);
       }
     });
   }
 
+  /**
+   * Fetch transaction receipt
+   * @param {TransactionId} transactionId 
+   * @returns {any} receipt
+   */
+  async getTransactionReceipt(transactionId: TransactionId): Promise&lt;any&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
+      try {
+        let transaction &#x3D; new TransactionReceiptQuery()
+          .setTransactionId(transactionId)
+          .setIncludeDuplicates(true)
+          .setIncludeChildren(true);
+
+        let receipt &#x3D; await transaction.execute(this.clientService.getClient());
+        resolve(receipt);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Sign scheduled transaction
+   * @param {ScheduleId} scheduleId 
+   * @param {PrivateKey} key 
+   * @returns {Status}
+   */
   async signScheduledTransaction(scheduleId: ScheduleId, key: PrivateKey): Promise&lt;Status&gt; {
     return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
-        // Creating the transaction...
-        const transaction &#x3D; await new ScheduleSignTransaction()
-            .setScheduleId(scheduleId)
-            .freezeWith(this.clientService.getClient())
-            .sign(key);
 
-        // Signing with the client operator key...
+        /**
+         * Creating the transaction...
+         */
+        const transaction &#x3D; await new ScheduleSignTransaction()
+          .setScheduleId(scheduleId)
+          .freezeWith(this.clientService.getClient())
+          .sign(key);
+
+        /**
+         * Signing with the client operator key...
+         */
         const txResponse &#x3D; await transaction.execute(this.clientService.getClient());
 
-        // Getting the receipt of the transaction...
+        /**
+         * Getting the receipt of the transaction...
+         */
         const receipt &#x3D; await txResponse.getReceipt(this.clientService.getClient());
 
-        // Getting the transaction status...
+        /**
+         * Getting the transaction status...
+         */
         resolve(receipt.status);
       } catch (error) {
         reject(error);
@@ -669,20 +733,34 @@ export class TransactionsService {
     });
   }
 
+  /**
+   * Create scheduled transaction
+   * @param {Transaction} transactionToSchedule 
+   * @returns {ScheduleId}
+   */
   async createScheduledTransaction(transactionToSchedule: Transaction): Promise&lt;ScheduleId | null&gt; {
     return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
-        // Creating a schedule transaction...
-        let  scheduledTransaction: ScheduleCreateTransaction &#x3D; new ScheduleCreateTransaction()
-            .setScheduledTransaction(transactionToSchedule);
 
-        // Signing with the client operator key and submit the transaction to a Hedera network...
+        /**
+         * Creating a schedule transaction...
+         */
+        let scheduledTransaction: ScheduleCreateTransaction &#x3D; new ScheduleCreateTransaction()
+          .setScheduledTransaction(transactionToSchedule);
+
+        /**
+         * Signing with the client operator key and submit the transaction to a Hedera network...
+         */
         let txResponse: TransactionResponse &#x3D; await scheduledTransaction.execute(this.clientService.getClient());
 
-        // Requesting the receipt of the transaction...
+        /**
+         * Requesting the receipt of the transaction...
+         */
         let receipt: TransactionReceipt &#x3D; await txResponse.getReceipt(this.clientService.getClient());
 
-        // Geting the schedule ID...
+        /**
+         * Getting the schedule ID...
+         */
         let scheduleId: ScheduleId | null &#x3D; receipt.scheduleId;
         resolve(scheduleId);
       } catch (error) {
@@ -691,6 +769,11 @@ export class TransactionsService {
     });
   }
 
+  /**
+   * Get scheduled transaction
+   * @param {string} scheduleId 
+   * @returns {any} info
+   */
   async getScheduledTrasaction(scheduleId: string): Promise&lt;any&gt; {
     return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {

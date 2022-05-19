@@ -69,6 +69,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Interface</p>
+
+            </p>
 
 
         <section>
@@ -143,6 +150,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Mirror Node</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -176,6 +189,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Network choice</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -209,6 +228,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Array of operators</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
             </section>
@@ -219,9 +244,24 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { MirrorNode } from &quot;./mirror.types&quot;;
 import { Operator } from &quot;./operator.types&quot;;
 
+/**
+ * Interface
+ */
 export interface HederaOptions {
+
+  /**
+   * Array of operators
+   */
   operators: Array&lt;Operator&gt;
+
+  /**
+   * Mirror Node
+   */
   mirrorNode: MirrorNode
+
+  /**
+   * Network choice
+   */
   network: &#x27;mainnet&#x27; | &#x27;testnet&#x27;
 }</code></pre>
     </div>

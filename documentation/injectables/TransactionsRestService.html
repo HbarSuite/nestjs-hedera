@@ -498,7 +498,7 @@ export class TransactionsRestService {
    */
   constructor(
     private restService: RestService
-  ) {}
+  ) { }
 
   /**
    * Fetch all transactions from timestamp
@@ -506,20 +506,20 @@ export class TransactionsRestService {
    * @param {string} accountId 
    * @returns {any} response
    */
-  getAllTransactionsFromTimestamp(timestamp: string, accountId: string):  Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+  getAllTransactionsFromTimestamp(timestamp: string, accountId: string): Promise&lt;any&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let transactions: any &#x3D; [];
 
         let response &#x3D; await this.restService
-        .call(&#x60;transactions/?account.id&#x3D;${accountId}&amp;timestamp&#x3D;gt:${timestamp}&#x60;);
+          .call(&#x60;transactions/?account.id&#x3D;${accountId}&amp;timestamp&#x3D;gt:${timestamp}&#x60;);
 
         transactions &#x3D; transactions.concat(response.transactions);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let nextArray &#x3D; response.links.next.split(&quot;&amp;&quot;);
           let next &#x3D; nextArray.slice(1, nextArray.length).join(&#x27;&amp;&#x27;);
-          
+
           await new Promise(resolve &#x3D;&gt; setTimeout(resolve, 1000));
 
           response &#x3D; await this.restService
@@ -529,7 +529,7 @@ export class TransactionsRestService {
         }
 
         resolve(transactions);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -542,21 +542,21 @@ export class TransactionsRestService {
    * @returns {any} response
    */
   getAllTransactions(accountId: string, filters?: string): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let transactions: any &#x3D; [];
         let url &#x3D; &#x60;transactions/?account.id&#x3D;${accountId}&#x60;;
 
-        if(filters) {
+        if (filters) {
           url +&#x3D; &#x60;&amp;${filters}&#x60;;
         }
 
         let response &#x3D; await this.restService
-        .call(url);
+          .call(url);
 
         transactions &#x3D; transactions.concat(response.transactions);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let nextArray &#x3D; response.links.next.split(&quot;&amp;&quot;);
           let next &#x3D; nextArray.slice(1, nextArray.length).join(&#x27;&amp;&#x27;);
 
@@ -569,7 +569,7 @@ export class TransactionsRestService {
         }
 
         resolve(transactions);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -581,13 +581,13 @@ export class TransactionsRestService {
    * @returns {any} response
    */
   getLatestTransactions(accountId: string): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let response &#x3D; await this.restService
-        .call(&#x60;transactions/?account.id&#x3D;${accountId}&#x60;);
+          .call(&#x60;transactions/?account.id&#x3D;${accountId}&#x60;);
 
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -599,13 +599,13 @@ export class TransactionsRestService {
    * @returns {any} response
    */
   getScheduledTransaction(transactionId: string): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let response &#x3D; await this.restService
-        .call(&#x60;schedules/${transactionId}&#x60;);
-        
+          .call(&#x60;schedules/${transactionId}&#x60;);
+
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });

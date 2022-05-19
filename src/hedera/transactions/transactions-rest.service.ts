@@ -13,7 +13,7 @@ export class TransactionsRestService {
    */
   constructor(
     private restService: RestService
-  ) {}
+  ) { }
 
   /**
    * Fetch all transactions from timestamp
@@ -21,20 +21,20 @@ export class TransactionsRestService {
    * @param {string} accountId 
    * @returns {any} response
    */
-  getAllTransactionsFromTimestamp(timestamp: string, accountId: string):  Promise<any> {
-    return new Promise(async(resolve, reject) => {
+  getAllTransactionsFromTimestamp(timestamp: string, accountId: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
       try {
         let transactions: any = [];
 
         let response = await this.restService
-        .call(`transactions/?account.id=${accountId}&timestamp=gt:${timestamp}`);
+          .call(`transactions/?account.id=${accountId}&timestamp=gt:${timestamp}`);
 
         transactions = transactions.concat(response.transactions);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let nextArray = response.links.next.split("&");
           let next = nextArray.slice(1, nextArray.length).join('&');
-          
+
           await new Promise(resolve => setTimeout(resolve, 1000));
 
           response = await this.restService
@@ -44,7 +44,7 @@ export class TransactionsRestService {
         }
 
         resolve(transactions);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -57,21 +57,21 @@ export class TransactionsRestService {
    * @returns {any} response
    */
   getAllTransactions(accountId: string, filters?: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let transactions: any = [];
         let url = `transactions/?account.id=${accountId}`;
 
-        if(filters) {
+        if (filters) {
           url += `&${filters}`;
         }
 
         let response = await this.restService
-        .call(url);
+          .call(url);
 
         transactions = transactions.concat(response.transactions);
 
-        while(response.links.next) {
+        while (response.links.next) {
           let nextArray = response.links.next.split("&");
           let next = nextArray.slice(1, nextArray.length).join('&');
 
@@ -84,7 +84,7 @@ export class TransactionsRestService {
         }
 
         resolve(transactions);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -96,13 +96,13 @@ export class TransactionsRestService {
    * @returns {any} response
    */
   getLatestTransactions(accountId: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let response = await this.restService
-        .call(`transactions/?account.id=${accountId}`);
+          .call(`transactions/?account.id=${accountId}`);
 
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -114,13 +114,13 @@ export class TransactionsRestService {
    * @returns {any} response
    */
   getScheduledTransaction(transactionId: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let response = await this.restService
-        .call(`schedules/${transactionId}`);
-        
+          .call(`schedules/${transactionId}`);
+
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });

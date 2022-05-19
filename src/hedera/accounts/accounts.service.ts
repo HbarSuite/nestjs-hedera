@@ -265,7 +265,7 @@ export class AccountsService {
   }
 
   /**
-   * 
+   * Get query balance
    * @param {string} accountId 
    * @param {string} tokenId 
    * @returns {AccountBalance}

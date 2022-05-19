@@ -69,6 +69,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Interface</p>
+
+            </p>
 
 
         <section>
@@ -137,6 +144,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>HBAR</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -170,6 +183,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Array of custom tokens</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
             </section>
@@ -180,9 +199,20 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Hbar } from &quot;@hashgraph/sdk/lib/contract/ContractCreateFlow&quot;;
 import { TokenBalance } from &quot;./token_balance.types&quot;;
 
+/**
+ * Interface
+ */
 export interface AccountBalance {
+
+  /**
+   * HBAR
+   */
   hbars: Hbar
-  tokens: Array&lt;TokenBalance&gt;  
+
+  /**
+   * Array of custom tokens
+   */
+  tokens: Array&lt;TokenBalance&gt;
 }</code></pre>
     </div>
 </div>
