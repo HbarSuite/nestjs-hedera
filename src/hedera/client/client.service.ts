@@ -4,6 +4,10 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Operator } from '../../types/operator.types';
 import { HederaOptions } from '../../types/hedera_options.types';
 
+
+/**
+ * Injectable
+ */
 @Injectable()
 export class ClientService {
 
@@ -41,7 +45,7 @@ export class ClientService {
   ) {
     this.network = this.hederaOptions.network;
     this.operators = this.hederaOptions.operators;
-    
+
     /**
      * Create our connection to the Hedera network...
      */
@@ -60,7 +64,7 @@ export class ClientService {
     } else {
       this.client = Client.forMainnet();
     }
-    
+
     this.operator = this.operators[Math.floor(Math.random() * this.operators.length)];
     this.client.setOperator(this.operator.accountId, this.operator.privateKey);
     return this.client;
@@ -72,6 +76,6 @@ export class ClientService {
    */
   getNodeOperator(): Operator {
     return this.operator;
-  }  
+  }
 }
 

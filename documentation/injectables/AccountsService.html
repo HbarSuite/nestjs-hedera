@@ -62,6 +62,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Injectable</p>
+
+            </p>
 
 
 
@@ -143,7 +150,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/hedera/accounts/accounts.service.ts:27</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/hedera/accounts/accounts.service.ts:30</a></div>
                             </td>
                         </tr>
 
@@ -222,8 +229,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="163"
-                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:163</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="166"
+                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:166</a></div>
                 </td>
             </tr>
 
@@ -320,8 +327,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="215"
-                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:215</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="218"
+                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:218</a></div>
                 </td>
             </tr>
 
@@ -417,8 +424,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="44"
-                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:44</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="47"
+                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:47</a></div>
                 </td>
             </tr>
 
@@ -490,8 +497,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="74"
-                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:74</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="77"
+                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:77</a></div>
                 </td>
             </tr>
 
@@ -562,8 +569,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="270"
-                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:270</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="273"
+                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:273</a></div>
                 </td>
             </tr>
 
@@ -645,8 +652,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="243"
-                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:243</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="246"
+                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:246</a></div>
                 </td>
             </tr>
 
@@ -742,8 +749,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="93"
-                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:93</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="96"
+                            class="link-to-prism">src/hedera/accounts/accounts.service.ts:96</a></div>
                 </td>
             </tr>
 
@@ -861,7 +868,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/hedera/accounts/accounts.service.ts:27</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/hedera/accounts/accounts.service.ts:30</a></div>
                         </td>
                     </tr>
 
@@ -880,18 +887,18 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { 
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
   AccountBalanceQuery,
-  AccountCreateTransaction, 
-  AccountId, 
-  AccountInfo, 
-  AccountInfoQuery, 
-  AccountUpdateTransaction, 
+  AccountCreateTransaction,
+  AccountId,
+  AccountInfo,
+  AccountInfoQuery,
+  AccountUpdateTransaction,
   Hbar,
   PrivateKey,
-  Status, 
-  TokenFreezeTransaction, 
-  TokenId, 
+  Status,
+  TokenFreezeTransaction,
+  TokenId,
   TokenUnfreezeTransaction
 } from &#x27;@hashgraph/sdk&#x27;;
 import { Injectable, Logger } from &#x27;@nestjs/common&#x27;;
@@ -901,6 +908,9 @@ import { TokenBalance } from &#x27;../../types/token_balance.types&#x27;;
 import { AccountBalance } from &#x27;../../types/account_balance.types&#x27;;
 import { PrivateKeyList } from &#x27;../../types/private-key-list.types&#x27;;
 
+/**
+ * Injectable
+ */
 @Injectable()
 export class AccountsService {
   /**
@@ -916,7 +926,7 @@ export class AccountsService {
   constructor(
     private clientService: ClientService,
     private keysService: KeysService
-  ) {}
+  ) { }
 
   /**
    * Fetches specific Account Info
@@ -924,13 +934,13 @@ export class AccountsService {
    * @returns {AccountInfo}
    */
   async getInfo(accountId: AccountId): Promise&lt;AccountInfo&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         /**
          * Creating the transaction...
          */
         const transaction &#x3D; new AccountInfoQuery()
-            .setAccountId(accountId);
+          .setAccountId(accountId);
 
 
         /**
@@ -941,8 +951,8 @@ export class AccountsService {
         /**
          * resolving the account&#x27;s info...
          */
-        resolve(accountInfo);        
-      } catch(error) {
+        resolve(accountInfo);
+      } catch (error) {
         reject(error);
       }
     });
@@ -954,11 +964,11 @@ export class AccountsService {
    * @returns {any} Account Public Key
    */
   async getKeys(accountId: AccountId): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         const accountInfo &#x3D; await this.getInfo(accountId);
         resolve(&lt;any&gt;accountInfo.key);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -978,29 +988,29 @@ export class AccountsService {
     newKey?: PrivateKey,
     memo?: string
   ): Promise&lt;Status&gt; {
-    return new Promise(async(resolve,reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         /**
          * Creating the transaction...
          */
         const transaction &#x3D; await new AccountUpdateTransaction()
-         /**
-         * setting single node accountId, as a workound for offline signature...
-         */
-            .setNodeAccountIds([new AccountId(6)])    
-            .setAccountId(accountId);
+          /**
+          * setting single node accountId, as a workound for offline signature...
+          */
+          .setNodeAccountIds([new AccountId(6)])
+          .setAccountId(accountId);
 
-            /**
-             * If there is a memo...
-             */
-        if(memo) {
+        /**
+         * If there is a memo...
+         */
+        if (memo) {
           transaction.setAccountMemo(memo);
         }
 
         /**
          * If there is a new key...
          */
-        if(newKey) {
+        if (newKey) {
           transaction.setKey(newKey);
         }
 
@@ -1011,7 +1021,7 @@ export class AccountsService {
          */
         let signTx &#x3D; await transaction.sign(signKey);
 
-        if(newKey) {
+        if (newKey) {
           signTx &#x3D; await signTx.sign(newKey);
         }
 
@@ -1029,7 +1039,7 @@ export class AccountsService {
          * Get the transaction consensus status...
          */
         resolve(receipt.status);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -1046,12 +1056,12 @@ export class AccountsService {
     balance: number,
     keysLength: number,
     keysThreshold?: number
-  ): Promise&lt;{accountId: AccountId | null, key: PrivateKey | PrivateKeyList}&gt; {
-    return new Promise(async(resolve,reject) &#x3D;&gt; {
+  ): Promise&lt;{ accountId: AccountId | null, key: PrivateKey | PrivateKeyList }&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         let key &#x3D; null;
 
-        if(keysLength &gt; 1) {
+        if (keysLength &gt; 1) {
           key &#x3D; await this.keysService.generateKeyList(undefined, keysLength, keysThreshold);
         } else {
           key &#x3D; await this.keysService.generateKey();
@@ -1061,8 +1071,8 @@ export class AccountsService {
          * Creating the transaction...
          */
         const transaction &#x3D; new AccountCreateTransaction()
-            .setKey(keysLength &gt; 1 ? (&lt;PrivateKeyList&gt;key).keyList : (&lt;PrivateKey&gt;key).publicKey)
-            .setInitialBalance(new Hbar(balance));
+          .setKey(keysLength &gt; 1 ? (&lt;PrivateKeyList&gt;key).keyList : (&lt;PrivateKey&gt;key).publicKey)
+          .setInitialBalance(new Hbar(balance));
 
         /**
          * Executing the transactions...
@@ -1081,8 +1091,8 @@ export class AccountsService {
           accountId: receipt.accountId,
           key: key
         });
-      } catch(error) {
-        reject(error);        
+      } catch (error) {
+        reject(error);
       }
     });
   }
@@ -1095,21 +1105,21 @@ export class AccountsService {
    * @returns {Status}
    */
   async freezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: string): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         const transaction &#x3D; await new TokenFreezeTransaction()
-            .setAccountId(accountId)
-            .setTokenId(tokenId)
-            .freezeWith(this.clientService.getClient());
+          .setAccountId(accountId)
+          .setTokenId(tokenId)
+          .freezeWith(this.clientService.getClient());
 
-        const signTx &#x3D; await transaction.sign(PrivateKey.fromString(freezeKey));   
+        const signTx &#x3D; await transaction.sign(PrivateKey.fromString(freezeKey));
         const txResponse &#x3D; await signTx.execute(this.clientService.getClient());
         const receipt &#x3D; await txResponse.getReceipt(this.clientService.getClient());
         resolve({
           status: receipt.status,
           transaction_id: txResponse.transactionId.toString()
         });
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -1123,21 +1133,21 @@ export class AccountsService {
    * @returns {Status}
    */
   async unfreezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: string): Promise&lt;any&gt; {
-    return new Promise(async(resolve, reject) &#x3D;&gt; {
+    return new Promise(async (resolve, reject) &#x3D;&gt; {
       try {
         const transaction &#x3D; await new TokenUnfreezeTransaction()
-            .setAccountId(accountId)
-            .setTokenId(tokenId)
-            .freezeWith(this.clientService.getClient());
+          .setAccountId(accountId)
+          .setTokenId(tokenId)
+          .freezeWith(this.clientService.getClient());
 
-        const signTx &#x3D; await transaction.sign(PrivateKey.fromString(freezeKey));   
+        const signTx &#x3D; await transaction.sign(PrivateKey.fromString(freezeKey));
         const txResponse &#x3D; await signTx.execute(this.clientService.getClient());
         const receipt &#x3D; await txResponse.getReceipt(this.clientService.getClient());
         resolve({
           status: receipt.status,
           transaction_id: txResponse.transactionId.toString()
         });
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -1158,23 +1168,23 @@ export class AccountsService {
         const response &#x3D; await query.execute(this.clientService.getClient());
         let balance &#x3D; null;
 
-        if(tokenId) {
+        if (tokenId) {
           balance &#x3D; {
             tokens: [{
               tokenId: tokenId,
-              balance: response.tokens?._map.get(tokenId) ? Number(response.tokens._map.get(tokenId)?.toString()): 0,
-              decimals: response.tokens?._map.get(tokenId) ? Number(response.tokenDecimals?._map.get(tokenId)): 0
+              balance: response.tokens?._map.get(tokenId) ? Number(response.tokens._map.get(tokenId)?.toString()) : 0,
+              decimals: response.tokens?._map.get(tokenId) ? Number(response.tokenDecimals?._map.get(tokenId)) : 0
             }],
             hbars: response.hbars
           };
         } else {
           let tokens &#x3D; new Array&lt;TokenBalance&gt;();
-          
+
           response.tokens?._map.forEach((value, tokenId) &#x3D;&gt; {
             tokens.push({
               tokenId: tokenId,
-              balance: response.tokens?._map.get(tokenId) ? Number(response.tokens._map.get(tokenId)?.toString()): 0,
-              decimals: response.tokens?._map.get(tokenId) ? Number(response.tokenDecimals?._map.get(tokenId)): 0
+              balance: response.tokens?._map.get(tokenId) ? Number(response.tokens._map.get(tokenId)?.toString()) : 0,
+              decimals: response.tokens?._map.get(tokenId) ? Number(response.tokenDecimals?._map.get(tokenId)) : 0
             });
           });
 
