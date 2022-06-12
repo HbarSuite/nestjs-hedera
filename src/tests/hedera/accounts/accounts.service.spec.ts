@@ -1,15 +1,15 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountsRestService } from '../../hedera/accounts/accounts-rest.service';
-import { AccountsService } from '../../hedera/accounts/accounts.service';
-import { ClientModule } from '../../hedera/client/client.module';
-import { KeysModule } from '../../hedera/keys/keys.module';
-import { RestModule } from '../../hedera/rest/rest.module';
-import { MirrorNode } from '../../types/mirror.types';
-import { Operator } from '../../types/operator.types';
-import configuration from '../../config/configuration';
-import { AccountDetails } from '../../types/account_details.types';
-import { AccountId, AccountInfo, PrivateKey, PublicKey, Status, TokenId } from '@hashgraph/sdk';
+import { AccountsRestService } from '../../../hedera/accounts/accounts-rest.service';
+import { AccountsService } from '../../../hedera/accounts/accounts.service';
+import { ClientModule } from '../../../hedera/client/client.module';
+import { KeysModule } from '../../../hedera/keys/keys.module';
+import { RestModule } from '../../../hedera/rest/rest.module';
+import { AccountInfo, PrivateKey, PublicKey, Status, TokenId } from '@hashgraph/sdk';
+import { AccountDetails } from '../../../types/account_details.types';
+import { MirrorNode } from '../../../types/mirror.types';
+import { Operator } from '../../../types/operator.types';
+import configuration from '../../../config/configuration';
 
 const dotenv = require('dotenv');
 dotenv.config();

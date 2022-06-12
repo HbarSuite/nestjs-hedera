@@ -9,13 +9,13 @@ export class AccountDetails {
   /**
    * accountId
    */
-   private accountId: AccountId
+   accountId: AccountId
 
 
   /**
    * key
    */
-   private key: PrivateKey | PrivateKeyList
+   key: PrivateKey | PrivateKeyList
 
    constructor(accountId, key) {
     this.accountId = accountId;

@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HfsService } from '../../hedera/hfs/hfs.service';
+import { HtsRestService } from '../../../hedera/hts/hts-rest.service';
 
-describe('HfsService', () => {
-  let service: HfsService;
+describe('HtsRestService', () => {
+  let service: HtsRestService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [HfsService],
+      providers: [HtsRestService],
     }).compile();
 
-    service = module.get<HfsService>(HfsService);
+    service = module.get<HtsRestService>(HtsRestService);
   });
 
   it('should be defined', () => {
