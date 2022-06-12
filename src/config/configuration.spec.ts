@@ -1,7 +1,7 @@
-// import { Configuration } from './configuration';
+import * as Configuration from './configuration';
 
-// describe('Configuration', () => {
-//   it('should be defined', () => {
-//     expect(new Configuration()).toBeDefined();
-//   });
-// });
+describe('Configuration', () => {
+  it('should be defined', () => {
+    expect(Configuration).toBeDefined();
+  });
+});
