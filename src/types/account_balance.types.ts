@@ -1,4 +1,4 @@
-import { Hbar } from "@hashgraph/sdk/lib/contract/ContractCreateFlow";
+import { Hbar } from "@hashgraph/sdk";
 import { TokenBalance } from "./token_balance.types";
 
 /**

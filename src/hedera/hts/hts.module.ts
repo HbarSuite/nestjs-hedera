@@ -5,7 +5,7 @@ import { ClientModule } from '../client/client.module';
 import { RestModule } from '../rest/rest.module';
 
 @Module({
-  imports: [ClientModule, RestModule, ClientModule],
+  imports: [ClientModule, RestModule],
   controllers: [],
   providers: [HtsService, HtsRestService],
   exports: [HtsService, HtsRestService]

@@ -1,3 +1,9 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { ClientService } from '../client/client.service';
+import { KeysService } from '../keys/keys.service';
+import { TokenBalance } from '../../types/token_balance.types';
+import { AccountBalance } from '../../types/account_balance.types';
+import { PrivateKeyList } from '../../types/private-key-list.types';
 import {
   AccountBalanceQuery,
   AccountCreateTransaction,
@@ -6,6 +12,7 @@ import {
   AccountInfoQuery,
   AccountUpdateTransaction,
   Hbar,
+  Key,
   PrivateKey,
   PublicKey,
   Status,
@@ -13,12 +20,7 @@ import {
   TokenId,
   TokenUnfreezeTransaction
 } from '@hashgraph/sdk';
-import { Injectable, Logger } from '@nestjs/common';
-import { ClientService } from '../client/client.service';
-import { KeysService } from '../keys/keys.service';
-import { TokenBalance } from '../../types/token_balance.types';
-import { AccountBalance } from '../../types/account_balance.types';
-import { PrivateKeyList } from '../../types/private-key-list.types';
+import { AccountDetails } from '../../types/account_details.types';
 
 /**
  * Injectable
@@ -42,10 +44,10 @@ export class AccountsService {
 
   /**
    * Fetches specific Account Info
-   * @param {AccountId} accountId 
+   * @param {AccountId | string} accountId 
    * @returns {AccountInfo}
    */
-  async getInfo(accountId: AccountId): Promise<AccountInfo> {
+  async getInfo(accountId: AccountId | string): Promise<AccountInfo> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -70,13 +72,13 @@ export class AccountsService {
  * @param {AccountId} accountId 
  * @returns {any} Account Public Key
  */
-  async getKeys(accountId: AccountId): Promise<any> {
+  async getKeys(accountId: AccountId | string): Promise<PublicKey> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
 
         const accountInfo = await this.getInfo(accountId);
-        resolve(<any>accountInfo.key);
+        resolve(<PublicKey>accountInfo.key);
       } catch (error) {
         reject(error);
       }
@@ -93,7 +95,7 @@ export class AccountsService {
    * @returns {Status} Account Update
    */
   async updateAccount(
-    accountId: AccountId,
+    accountId: AccountId | string,
     signKey: PrivateKey,
     newKey?: PrivateKey,
     memo?: string,
@@ -157,7 +159,7 @@ export class AccountsService {
     publicKeys?: Array<string>,
     keysThreshold?: number,
     maxAutomaticTokenAssociations?: number
-  ): Promise<{ accountId: AccountId | null, key: PrivateKey | PrivateKeyList }> {
+  ): Promise<AccountDetails> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -185,10 +187,7 @@ export class AccountsService {
         const receipt = await txResponse.getReceipt(client);
 
         // resolving the accountId...
-        resolve({
-          accountId: receipt.accountId,
-          key: key
-        });
+        resolve(new AccountDetails(receipt.accountId, key));
       } catch (error) {
         reject(error);
       }
