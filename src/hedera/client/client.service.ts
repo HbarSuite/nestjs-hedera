@@ -1,8 +1,8 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { Client } from '@hashgraph/sdk';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Operator } from '../../types/operator.types';
 import { HederaOptions } from '../../types/hedera_options.types';
+import { Client } from '@hashgraph/sdk';
 
 /**
  * Injectable

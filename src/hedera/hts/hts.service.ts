@@ -18,6 +18,7 @@ import {
   TokenBurnTransaction
 } from '@hashgraph/sdk';
 import { Injectable, Logger } from '@nestjs/common';
+import { firstValueFrom } from 'rxjs';
 import { TransactionDetails } from '../../types/transaction_details.types';
 import { ClientService } from '../client/client.service';
 
@@ -51,29 +52,38 @@ export class HtsService {
     accountId: AccountId,
     tokenId: TokenId,
     keys: PrivateKey | Array<PrivateKey>
-  ): Promise<Status | undefined> {
+  ): Promise<Status | undefined | any> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
-
+        // generating random number from 3 to 9, as a workound for offline signature...
+        let nodeAccountId = Math.floor(Math.random() * (9 - 3 + 1) + 3);
+        
+        console.log("using account ID", (new AccountId(nodeAccountId)).toString());
         const transaction = await new TokenAssociateTransaction()
+          // setting single node accountId, as a workound for offline signature...
+          .setNodeAccountIds([new AccountId(nodeAccountId)])
           .setAccountId(accountId)
           .setTokenIds([tokenId])
           .freezeWith(client);
 
         let signTx = null;
 
-        if (Array.isArray(keys)) {
-          for (let i = 0; i < keys.length; i++) {
-            signTx = await transaction.sign(keys[i]);
-          };
+        if(keys) {
+          if (Array.isArray(keys)) {
+            for (let i = 0; i < keys.length; i++) {
+              signTx = await transaction.sign(keys[i]);
+            };
+          } else {
+            signTx = await transaction.sign(keys);
+          }
+  
+          const txResponse = await signTx.execute(client);
+          const receipt = await txResponse.getReceipt(client);
+          resolve(receipt.status);          
         } else {
-          signTx = await transaction.sign(keys);
+          resolve(transaction);
         }
-
-        const txResponse = await signTx.execute(client);
-        const receipt = await txResponse.getReceipt(client);
-        resolve(receipt.status);
       } catch (error) {
         reject(error);
       }
@@ -335,14 +345,14 @@ export class HtsService {
 
   /**
    * Transfer Token
-   * @param {TokenId} tokenId 
+   * @param {TokenId | Array<TokenId>} tokenId 
    * @param {AccountId} from 
    * @param {AccountId} to 
-   * @param {number} amount 
-   * @param {number} tokenDecimals 
+   * @param {number | Array<Number>} amount 
+   * @param {number | Array<Number>} tokenDecimals 
    * @param {string} memo 
    * @param {PrivateKey} key 
-   * @returns {TransactionDetails} 
+   * @returns {TransactionDetails | Transaction} 
    */
   async transferToken(
     tokenId: TokenId | Array<TokenId>,
@@ -351,7 +361,8 @@ export class HtsService {
     amount: number | Array<Number>,
     tokenDecimals: number | Array<Number>,
     memo?: string,
-    key?: PrivateKey
+    key?: PrivateKey,
+    hbarAmount?: number
   ): Promise<TransactionDetails | Transaction> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -359,6 +370,12 @@ export class HtsService {
 
         // Creating the transfer transaction...
         const transaction = await new TransferTransaction();
+
+        if(hbarAmount) {
+          transaction
+          .addHbarTransfer(from, new Hbar(-hbarAmount))
+          .addHbarTransfer(to, new Hbar(hbarAmount))
+        }
 
         if (!Array.isArray(tokenId) && !Array.isArray(amount) && !Array.isArray(tokenDecimals)) {
           transaction
@@ -373,6 +390,69 @@ export class HtsService {
             });
           }
         }
+
+        if (memo) {
+          transaction.setTransactionMemo(memo);
+        }
+
+        if (key) {
+          transaction.freezeWith(client);
+
+          // signing the transaction with the sender key...
+          let signTx = await transaction.sign(key);
+
+          // Submitting the transaction to a Hedera network...
+          const txResponse = await signTx.execute(client);
+
+          // Requesting the receipt of the transaction...
+          const receipt = await txResponse.getReceipt(client);
+
+          // Resolving the transaction consensus status...
+          resolve({
+            status: receipt.status,
+            transaction_id: txResponse.transactionId
+          });
+        } else {
+          // if no key has been provided, we return the transasction to be wrapped
+          // into a scheduled transaction to allow multisig threshold mechanism...
+          resolve(transaction);
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Atomic Swap
+   * @param {Array<any>} swaps 
+   * @param {string} memo 
+   * @param {PrivateKey} key 
+   * @returns {TransactionDetails | Transaction} 
+   */
+  async atomicSwap(
+    swaps: Array<any>,
+    memo?: string,
+    key?: PrivateKey
+  ): Promise<TransactionDetails | Transaction> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const client = this.clientService.getClient();
+
+        // Creating the transfer transaction...
+        const transaction = await new TransferTransaction();
+
+        swaps.forEach(swap => {
+          if(swap.token.id == 'HBAR') {
+            transaction
+            .addHbarTransfer(swap.from, new Hbar(-swap.amount.toFixed(8)))
+            .addHbarTransfer(swap.to, new Hbar(swap.amount.toFixed(8)));
+          } else {
+            transaction
+            .addTokenTransfer(swap.token.id, swap.from, Number(-swap.amount * (10 ** swap.token.decimals)))
+            .addTokenTransfer(swap.token.id, swap.to, Number(swap.amount * (10 ** swap.token.decimals)));
+          }
+        });
 
         if (memo) {
           transaction.setTransactionMemo(memo);

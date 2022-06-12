@@ -1,10 +1,14 @@
 {
   "name": "hsuite-nestjs-hedera",
-  "version": "1.0.11",
+  "version": "1.0.18",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --detectOpenHandles --forceExit --config ./src/tests/e2e/jest-e2e.json",
     "compodoc": "npx compodoc -p tsconfig.doc.json -s",
     "build": "tsc"
   },
@@ -37,9 +41,33 @@
     "@hashgraph/sdk": "^2.14.0",
     "@nestjs/axios": "^0.0.7",
     "@nestjs/common": "^8.4.5",
-    "@nestjs/config": "^2.0.0",
+    "@nestjs/config": "^2.1.0",
+    "@nestjs/core": "^8.4.6",
     "@nestjs/event-emitter": "^1.1.1",
+    "@nestjs/testing": "^8.4.6",
+    "@types/jest": "^28.1.1",
     "axios": "^0.27.2",
-    "rxjs": "^7.5.5"
+    "jest": "^28.1.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.5",
+    "ts-jest": "^28.0.4"
+  },
+  "jest": {
+    "verbose": true,
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
   }
 }
