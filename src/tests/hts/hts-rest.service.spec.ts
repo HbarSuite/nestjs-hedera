@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HtsRestService } from '../../../hedera/hts/hts-rest.service';
+import { HtsRestService } from '../../hedera/hts/hts-rest.service';
 
 describe('HtsRestService', () => {
   let service: HtsRestService;

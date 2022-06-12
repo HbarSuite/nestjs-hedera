@@ -9,7 +9,7 @@ import { MirrorNode } from '../../types/mirror.types';
 import { Operator } from '../../types/operator.types';
 import configuration from '../../config/configuration';
 import { AccountDetails } from '../../types/account_details.types';
-import { AccountId, AccountInfo, PrivateKey, PublicKey, Status } from '@hashgraph/sdk';
+import { AccountId, AccountInfo, PrivateKey, PublicKey, Status, TokenId } from '@hashgraph/sdk';
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -20,6 +20,11 @@ describe('AccountsService', () => {
   let account = {
     id: process.env.DEV_ACCOUNT_ID,
     privateKey: process.env.DEV_ACCOUNT_PRIVATE_KEY
+  };
+
+  let token = {
+    id: process.env.DEV_TOKEN_ID,
+    freezeKey: process.env.DEV_TOKEN_FREEZE_KEY,
   };
 
   beforeEach(async () => {
@@ -65,27 +70,27 @@ describe('AccountsService', () => {
   });
 
   describe(`getInfo`, () => {
-    test('returns AccountInfo if params is valid, or Hedera does NOT crashes', async() => {
+    test('returns AccountInfo if params is valid, or Hedera does NOT crashes', async () => {
       await expect(service.getInfo(account.id)).resolves.toBeInstanceOf(AccountInfo);
     });
-  
-    test('returns error if params is not valid, or if Hedera crashes', async() => {
+
+    test('returns error if params is not valid, or if Hedera crashes', async () => {
       await expect(service.getInfo('crashme')).rejects.toThrow(Error);
     });
   });
 
   describe(`getKeys`, () => {
-    test('returns Key if params is valid, or Hedera does NOT crashes', async() => {
+    test('returns Key if params is valid, or Hedera does NOT crashes', async () => {
       await expect(service.getKeys(account.id)).resolves.toBeInstanceOf(PublicKey);
     });
-  
-    test('returns error if params is not valid, or if Hedera crashes', async() => {
+
+    test('returns error if params is not valid, or if Hedera crashes', async () => {
       await expect(service.getKeys('crashme')).rejects.toThrow(Error);
     });
   });
 
   describe(`updateAccount`, () => {
-    test('returns Status if params is valid, or Hedera does NOT crashes', async() => {
+    test('returns Status if params is valid, or Hedera does NOT crashes', async () => {
       await expect(service.updateAccount(
         account.id,
         PrivateKey.fromString(account.privateKey),
@@ -94,20 +99,20 @@ describe('AccountsService', () => {
         2
       )).resolves.toBeInstanceOf(Status);
     });
-  
-    test('returns error if params is not valid, or if Hedera crashes', async() => {
+
+    test('returns error if params is not valid, or if Hedera crashes', async () => {
       await expect(service.updateAccount(
         'crashme',
         PrivateKey.fromString(account.privateKey),
         PrivateKey.fromString(account.privateKey),
         'changing memo',
-        2        
+        2
       )).rejects.toThrow(Error);
     });
   });
 
   describe(`createAccount`, () => {
-    test('SINGLE_SIG: returns [accountId, PrivateKey] if params is valid, or Hedera does NOT crashes', async() => {
+    test('SINGLE_SIG: returns [accountId, PrivateKey] if params is valid, or Hedera does NOT crashes', async () => {
       await expect(service.createAccount(
         1,
         1,
@@ -117,7 +122,7 @@ describe('AccountsService', () => {
       )).resolves.toBeInstanceOf(AccountDetails)
     });
 
-    test('MULTI_SIG: returns [accountId, PrivateKey] if params is valid, or Hedera does NOT crashes', async() => {
+    test('MULTI_SIG: returns [accountId, PrivateKey] if params is valid, or Hedera does NOT crashes', async () => {
       await expect(service.createAccount(
         1,
         3,
@@ -126,14 +131,72 @@ describe('AccountsService', () => {
         1
       )).resolves.toBeInstanceOf(AccountDetails)
     });
-  
-    test('returns error if params is not valid, or if Hedera crashes', async() => {
+
+    test('returns error if params is not valid, or if Hedera crashes', async () => {
       await expect(service.createAccount(
         -1,
         1,
         null,
         null,
-        1       
+        1
+      )).rejects.toThrow(Error);
+    });
+  });
+
+  describe(`freezeAccount`, () => {
+    test('Returns Status as object, if Hedera does NOT crash', async () => {
+      await expect(service.freezeAccount(
+        account.id,
+        token.id,
+        token.freezeKey
+      )).resolves.toBeInstanceOf(Object)
+    });
+
+    test('returns error if params are not valid, or if Hedera crashes', async () => {
+      await expect(service.freezeAccount(
+        null,
+        token.id,
+        token.freezeKey
+      )).rejects.toThrow(Error);
+    });
+  });
+
+  describe(`unfreezeAccount`, () => {
+    test('Returns Status as object, if Hedera does NOT crash', async () => {
+      await expect(service.unfreezeAccount(
+        account.id,
+        token.id,
+        token.freezeKey
+      )).resolves.toBeInstanceOf(Object)
+    });
+
+    test('returns error if params are not valid, or if Hedera crashes', async () => {
+      await expect(service.unfreezeAccount(
+        null,
+        token.id,
+        token.freezeKey
+      )).rejects.toThrow(Error);
+    });
+  });
+
+  describe(`getQueryBalance`, () => {
+    test('Returns AccountBalance as object, if Hedera does NOT crash', async () => {
+      await expect(service.getQueryBalance(
+        account.id,
+        token.id
+      )).resolves.toBeInstanceOf(Object)
+    });
+
+    test('If there is no token id, map and push', async () => {
+      await expect(service.getQueryBalance(
+        account.id
+      )).resolves.toBeInstanceOf(Object)
+    });
+
+    test('Returns error if params are not valid, or if Hedera crashes', async () => {
+      await expect(service.getQueryBalance(
+        null,
+        token.id
       )).rejects.toThrow(Error);
     });
   });

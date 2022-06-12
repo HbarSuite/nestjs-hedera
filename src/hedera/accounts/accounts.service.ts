@@ -201,7 +201,7 @@ export class AccountsService {
  * @param {string} freezeKey 
  * @returns {Status}
  */
-  async freezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: string): Promise<any> {
+  async freezeAccount(accountId: AccountId | string, tokenId: TokenId | string, freezeKey: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -231,7 +231,7 @@ export class AccountsService {
  * @param {string} freezeKey 
  * @returns {Status}
  */
-  async unfreezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: string): Promise<any> {
+  async unfreezeAccount(accountId: AccountId | string, tokenId: TokenId | string, freezeKey: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -260,7 +260,7 @@ export class AccountsService {
  * @param {string} tokenId 
  * @returns {AccountBalance}
  */
-  getQueryBalance(accountId: string | AccountId, tokenId?: string): Promise<AccountBalance> {
+  getQueryBalance(accountId: AccountId | string, tokenId?: string): Promise<AccountBalance> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -270,8 +270,9 @@ export class AccountsService {
 
         const response = await query.execute(client);
         let balance = null;
-
+        
         if (tokenId) {
+          /* istanbul ignore next */
           balance = {
             tokens: [{
               tokenId: tokenId,
@@ -280,9 +281,11 @@ export class AccountsService {
             }],
             hbars: response.hbars
           };
+          /* istanbul ignore next */
         } else {
           let tokens = new Array<TokenBalance>();
 
+          /* istanbul ignore next */
           response.tokens?._map.forEach((value, tokenId) => {
             tokens.push({
               tokenId: tokenId,
@@ -290,7 +293,7 @@ export class AccountsService {
               decimals: response.tokens?._map.get(tokenId) ? Number(response.tokenDecimals?._map.get(tokenId)) : 0
             });
           });
-
+          /* istanbul ignore next */
           balance = {
             tokens: tokens,
             hbars: response.hbars
