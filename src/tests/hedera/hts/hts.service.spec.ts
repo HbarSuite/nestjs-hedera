@@ -2,27 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HtsService } from '../../../hedera/hts/hts.service';
 import {
   AccountId,
-  Hbar,
   PrivateKey,
   Status,
-  TokenAssociateTransaction,
   TokenId,
-  TokenMintTransaction,
-  TokenPauseTransaction,
-  TokenUnpauseTransaction,
-  TokenDissociateTransaction,
-  Transaction,
-  TransferTransaction,
   TransactionReceipt,
-  NftId,
-  TokenNftInfoQuery,
   TokenNftInfo,
-  TokenBurnTransaction
 } from '@hashgraph/sdk';
-import { Injectable, Logger } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
-import { TransactionDetails } from '../../../types/transaction_details.types';
-import { ClientService } from '../../../hedera/client/client.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientModule } from '../../../hedera/client/client.module';
 import { RestModule } from '../../../hedera/rest/rest.module';
