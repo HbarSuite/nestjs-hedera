@@ -58,7 +58,7 @@ export class HtsService {
         const client = this.clientService.getClient();
         // generating random number from 3 to 9, as a workound for offline signature...
         let nodeAccountId = Math.floor(Math.random() * (9 - 3 + 1) + 3);
-        
+
         console.log("using account ID", (new AccountId(nodeAccountId)).toString());
         const transaction = await new TokenAssociateTransaction()
           // setting single node accountId, as a workound for offline signature...
@@ -69,7 +69,7 @@ export class HtsService {
 
         let signTx = null;
 
-        if(keys) {
+        if (keys) {
           if (Array.isArray(keys)) {
             for (let i = 0; i < keys.length; i++) {
               signTx = await transaction.sign(keys[i]);
@@ -77,10 +77,10 @@ export class HtsService {
           } else {
             signTx = await transaction.sign(keys);
           }
-  
+
           const txResponse = await signTx.execute(client);
           const receipt = await txResponse.getReceipt(client);
-          resolve(receipt.status);          
+          resolve(receipt.status);
         } else {
           resolve(transaction);
         }
@@ -189,8 +189,8 @@ export class HtsService {
    */
   async mintNftToken(
     tokenId: TokenId,
-    CID: string,
-    supplyKey?: PrivateKey | Array<PrivateKey>
+    supplyKey: PrivateKey | Array<PrivateKey>,
+    CID: string
   ): Promise<TransactionReceipt | Transaction> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -371,10 +371,10 @@ export class HtsService {
         // Creating the transfer transaction...
         const transaction = await new TransferTransaction();
 
-        if(hbarAmount) {
+        if (hbarAmount) {
           transaction
-          .addHbarTransfer(from, new Hbar(-hbarAmount))
-          .addHbarTransfer(to, new Hbar(hbarAmount))
+            .addHbarTransfer(from, new Hbar(-hbarAmount))
+            .addHbarTransfer(to, new Hbar(hbarAmount))
         }
 
         if (!Array.isArray(tokenId) && !Array.isArray(amount) && !Array.isArray(tokenDecimals)) {
@@ -443,14 +443,14 @@ export class HtsService {
         const transaction = await new TransferTransaction();
 
         swaps.forEach(swap => {
-          if(swap.token.id == 'HBAR') {
+          if (swap.token.id == 'HBAR') {
             transaction
-            .addHbarTransfer(swap.from, new Hbar(-swap.amount.toFixed(8)))
-            .addHbarTransfer(swap.to, new Hbar(swap.amount.toFixed(8)));
+              .addHbarTransfer(swap.from, new Hbar(-swap.amount.toFixed(8)))
+              .addHbarTransfer(swap.to, new Hbar(swap.amount.toFixed(8)));
           } else {
             transaction
-            .addTokenTransfer(swap.token.id, swap.from, Number(-swap.amount * (10 ** swap.token.decimals)))
-            .addTokenTransfer(swap.token.id, swap.to, Number(swap.amount * (10 ** swap.token.decimals)));
+              .addTokenTransfer(swap.token.id, swap.from, Number(-swap.amount * (10 ** swap.token.decimals)))
+              .addTokenTransfer(swap.token.id, swap.to, Number(swap.amount * (10 ** swap.token.decimals)));
           }
         });
 

@@ -44,10 +44,10 @@ export class AccountsService {
 
   /**
    * Fetches specific Account Info
-   * @param {AccountId | string} accountId 
+   * @param {AccountId} accountId 
    * @returns {AccountInfo}
    */
-  async getInfo(accountId: AccountId | string): Promise<AccountInfo> {
+  async getInfo(accountId: AccountId): Promise<AccountInfo> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -72,7 +72,7 @@ export class AccountsService {
  * @param {AccountId} accountId 
  * @returns {any} Account Public Key
  */
-  async getKeys(accountId: AccountId | string): Promise<PublicKey> {
+  async getKeys(accountId: AccountId): Promise<PublicKey> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -95,7 +95,7 @@ export class AccountsService {
    * @returns {Status} Account Update
    */
   async updateAccount(
-    accountId: AccountId | string,
+    accountId: AccountId,
     signKey: PrivateKey,
     newKey?: PrivateKey,
     memo?: string,
@@ -115,7 +115,7 @@ export class AccountsService {
           transaction.setAccountMemo(memo);
         }
 
-        if(maxAutomaticTokenAssociations) {
+        if (maxAutomaticTokenAssociations) {
           transaction.setMaxAutomaticTokenAssociations(maxAutomaticTokenAssociations);
         }
 
@@ -176,7 +176,7 @@ export class AccountsService {
           .setKey(keysLength > 1 ? (<PrivateKeyList>key).keyList : (<PrivateKey>key).publicKey)
           .setInitialBalance(new Hbar(balance));
 
-        if(maxAutomaticTokenAssociations) {
+        if (maxAutomaticTokenAssociations) {
           transaction.setMaxAutomaticTokenAssociations(maxAutomaticTokenAssociations);
         }
 
@@ -198,10 +198,10 @@ export class AccountsService {
  * Freezes account related to token ID
  * @param {AccountId} accountId 
  * @param {TokenId} tokenId 
- * @param {string} freezeKey 
+ * @param {PrivateKey} freezeKey 
  * @returns {Status}
  */
-  async freezeAccount(accountId: AccountId | string, tokenId: TokenId | string, freezeKey: string): Promise<any> {
+  async freezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: PrivateKey): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -211,7 +211,7 @@ export class AccountsService {
           .setTokenId(tokenId)
           .freezeWith(client);
 
-        const signTx = await transaction.sign(PrivateKey.fromString(freezeKey));
+        const signTx = await transaction.sign(freezeKey);
         const txResponse = await signTx.execute(client);
         const receipt = await txResponse.getReceipt(client);
         resolve({
@@ -228,10 +228,10 @@ export class AccountsService {
  * Unfreezes account related to token ID
  * @param {AccountId} accountId 
  * @param {TokenId} tokenId 
- * @param {string} freezeKey 
+ * @param {PrivateKey} freezeKey 
  * @returns {Status}
  */
-  async unfreezeAccount(accountId: AccountId | string, tokenId: TokenId | string, freezeKey: string): Promise<any> {
+  async unfreezeAccount(accountId: AccountId, tokenId: TokenId, freezeKey: PrivateKey): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -241,7 +241,7 @@ export class AccountsService {
           .setTokenId(tokenId)
           .freezeWith(client);
 
-        const signTx = await transaction.sign(PrivateKey.fromString(freezeKey));
+        const signTx = await transaction.sign(freezeKey);
         const txResponse = await signTx.execute(client);
         const receipt = await txResponse.getReceipt(client);
         resolve({
@@ -256,11 +256,11 @@ export class AccountsService {
 
   /**
  * Get query balance
- * @param {string} accountId 
- * @param {string} tokenId 
+ * @param {AccountId} accountId 
+ * @param {TokenId} tokenId 
  * @returns {AccountBalance}
  */
-  getQueryBalance(accountId: AccountId | string, tokenId?: string): Promise<AccountBalance> {
+  getQueryBalance(accountId: AccountId, tokenId?: TokenId): Promise<AccountBalance> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -270,14 +270,14 @@ export class AccountsService {
 
         const response = await query.execute(client);
         let balance = null;
-        
+
         if (tokenId) {
           /* istanbul ignore next */
           balance = {
             tokens: [{
               tokenId: tokenId,
-              balance: response.tokens?._map.get(tokenId) ? Number(response.tokens._map.get(tokenId)?.toString()) : 0,
-              decimals: response.tokens?._map.get(tokenId) ? Number(response.tokenDecimals?._map.get(tokenId)) : 0
+              balance: response.tokens?._map.get(tokenId.toString()) ? Number(response.tokens._map.get(tokenId.toString())?.toString()) : 0,
+              decimals: response.tokens?._map.get(tokenId.toString()) ? Number(response.tokenDecimals?._map.get(tokenId.toString())) : 0
             }],
             hbars: response.hbars
           };

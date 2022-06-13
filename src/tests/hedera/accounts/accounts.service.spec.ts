@@ -5,7 +5,7 @@ import { AccountsService } from '../../../hedera/accounts/accounts.service';
 import { ClientModule } from '../../../hedera/client/client.module';
 import { KeysModule } from '../../../hedera/keys/keys.module';
 import { RestModule } from '../../../hedera/rest/rest.module';
-import { AccountInfo, PrivateKey, PublicKey, Status, TokenId } from '@hashgraph/sdk';
+import { AccountInfo, PrivateKey, PublicKey, Status, TokenId, AccountId } from '@hashgraph/sdk';
 import { AccountDetails } from '../../../types/account_details.types';
 import { MirrorNode } from '../../../types/mirror.types';
 import { Operator } from '../../../types/operator.types';
@@ -18,13 +18,13 @@ describe('AccountsService', () => {
   let service: AccountsService;
 
   let account = {
-    id: process.env.DEV_ACCOUNT_ID,
-    privateKey: process.env.DEV_ACCOUNT_PRIVATE_KEY
+    id: AccountId.fromString(process.env.DEV_ACCOUNT_ID),
+    privateKey: PrivateKey.fromString(process.env.DEV_ACCOUNT_PRIVATE_KEY)
   };
 
   let token = {
-    id: process.env.DEV_TOKEN_ID,
-    freezeKey: process.env.DEV_TOKEN_FREEZE_KEY,
+    id: TokenId.fromString(process.env.DEV_TOKEN_ID),
+    freezeKey: PrivateKey.fromString(process.env.DEV_TOKEN_FREEZE_KEY)
   };
 
   beforeEach(async () => {
@@ -75,7 +75,7 @@ describe('AccountsService', () => {
     });
 
     test('returns error if params is not valid, or if Hedera crashes', async () => {
-      await expect(service.getInfo('crashme')).rejects.toThrow(Error);
+      await expect(service.getInfo(null)).rejects.toThrow(Error);
     });
   });
 
@@ -85,7 +85,7 @@ describe('AccountsService', () => {
     });
 
     test('returns error if params is not valid, or if Hedera crashes', async () => {
-      await expect(service.getKeys('crashme')).rejects.toThrow(Error);
+      await expect(service.getKeys(null)).rejects.toThrow(Error);
     });
   });
 
@@ -93,8 +93,8 @@ describe('AccountsService', () => {
     test('returns Status if params is valid, or Hedera does NOT crashes', async () => {
       await expect(service.updateAccount(
         account.id,
-        PrivateKey.fromString(account.privateKey),
-        PrivateKey.fromString(account.privateKey),
+        account.privateKey,
+        account.privateKey,
         'changing memo',
         2
       )).resolves.toBeInstanceOf(Status);
@@ -102,9 +102,9 @@ describe('AccountsService', () => {
 
     test('returns error if params is not valid, or if Hedera crashes', async () => {
       await expect(service.updateAccount(
-        'crashme',
-        PrivateKey.fromString(account.privateKey),
-        PrivateKey.fromString(account.privateKey),
+        null,
+        account.privateKey,
+        account.privateKey,
         'changing memo',
         2
       )).rejects.toThrow(Error);
@@ -160,7 +160,7 @@ describe('AccountsService', () => {
       )).rejects.toThrow(Error);
     });
   });
-
+  //
   describe(`unfreezeAccount`, () => {
     test('Returns Status as object, if Hedera does NOT crash', async () => {
       await expect(service.unfreezeAccount(
