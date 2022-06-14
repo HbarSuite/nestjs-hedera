@@ -1,15 +1,15 @@
-import { 
-  FileAppendTransaction, 
-  FileContentsQuery, 
-  FileCreateTransaction, 
-  FileDeleteTransaction, 
-  FileId, 
-  FileInfo, 
-  FileInfoQuery, 
-  FileUpdateTransaction, 
-  Hbar, 
-  PrivateKey, 
-  Status 
+import {
+  FileAppendTransaction,
+  FileContentsQuery,
+  FileCreateTransaction,
+  FileDeleteTransaction,
+  FileId,
+  FileInfo,
+  FileInfoQuery,
+  FileUpdateTransaction,
+  Hbar,
+  PrivateKey,
+  Status
 } from '@hashgraph/sdk';
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientService } from '../client/client.service';
@@ -30,7 +30,7 @@ export class HfsService {
    */
   constructor(
     private clientService: ClientService
-  ) {}
+  ) { }
 
   /**
    * Create File
@@ -46,7 +46,7 @@ export class HfsService {
     memo?: string,
     maxTransactionFee?: number,
   ): Promise<FileId | null> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
 
@@ -55,11 +55,11 @@ export class HfsService {
           .setKeys([key])
           .setContents(content);
 
-        if(memo) {
+        if (memo) {
           transaction.setFileMemo(memo);
         }
 
-        if(maxTransactionFee) {
+        if (maxTransactionFee) {
           transaction.setMaxTransactionFee(new Hbar(maxTransactionFee));
         }
 
@@ -72,8 +72,8 @@ export class HfsService {
         // Requesting the receipt...
         const receipt = await submitTx.getReceipt(client);
         // Get the file ID
-        resolve(receipt.fileId);        
-      } catch(error) {
+        resolve(receipt.fileId);
+      } catch (error) {
         reject(error);
       }
     });
@@ -93,21 +93,21 @@ export class HfsService {
     content: string,
     maxTransactionFee?: number,
   ): Promise<Status> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
-        
+
         // Creating the transaction...
         const transaction = await new FileAppendTransaction()
           .setFileId(fileId)
           .setContents(content);
 
-        if(maxTransactionFee) {
+        if (maxTransactionFee) {
           transaction.setMaxTransactionFee(new Hbar(maxTransactionFee));
         }
 
         transaction.freezeWith(client);
-        
+
         // Signing with the file private keys...
         const signTx = await transaction.sign(key);
         // Executing the transaction...
@@ -115,8 +115,8 @@ export class HfsService {
         // Requesting the receipt...
         const receipt = await submitTx.getReceipt(client);
         // Get the transaction status
-        resolve(receipt.status);        
-      } catch(error) {
+        resolve(receipt.status);
+      } catch (error) {
         reject(error);
       }
     });
@@ -136,11 +136,11 @@ export class HfsService {
     fileId: FileId,
     content: string,
     signKey: PrivateKey,
-    newKey?: PrivateKey,    
+    newKey?: PrivateKey,
     memo?: string,
     maxTransactionFee?: number,
   ): Promise<Status> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
 
@@ -149,34 +149,34 @@ export class HfsService {
           .setFileId(fileId)
           .setContents(content);
 
-        if(memo) {
+        if (memo) {
           transaction.setFileMemo(memo);
-        }          
+        }
 
-        if(maxTransactionFee) {
+        if (maxTransactionFee) {
           transaction.setMaxTransactionFee(new Hbar(maxTransactionFee));
         }
 
-        if(newKey) {
+        if (newKey) {
           transaction.setKeys([newKey]);
         }
 
         transaction.freezeWith(client);
-        
+
         // Signing the transaction...
         let signTx = await transaction.sign(signKey);
 
-        if(newKey) {
+        if (newKey) {
           signTx = await signTx.sign(newKey);
         }
-        
+
         // Executing the transaction...
         const submitTx = await signTx.execute(client);
         // Requesting the receipt...
         const receipt = await submitTx.getReceipt(client);
         // Get the transaction status
-        resolve(receipt.status);        
-      } catch(error) {
+        resolve(receipt.status);
+      } catch (error) {
         reject(error);
       }
     });
@@ -194,7 +194,7 @@ export class HfsService {
     key: PrivateKey,
     maxTransactionFee?: number,
   ): Promise<Status> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
 
@@ -202,12 +202,12 @@ export class HfsService {
         const transaction = await new FileDeleteTransaction()
           .setFileId(fileId);
 
-        if(maxTransactionFee) {
+        if (maxTransactionFee) {
           transaction.setMaxTransactionFee(new Hbar(maxTransactionFee));
         }
 
         transaction.freezeWith(client);
-        
+
         // Signing with the file private keys...
         const signTx = await transaction.sign(key);
         // Executing the transaction...
@@ -215,8 +215,8 @@ export class HfsService {
         // Requesting the receipt...
         const receipt = await submitTx.getReceipt(client);
         // Get the transaction status
-        resolve(receipt.status);        
-      } catch(error) {
+        resolve(receipt.status);
+      } catch (error) {
         reject(error);
       }
     });
@@ -225,23 +225,23 @@ export class HfsService {
   /**
    * Get contents
    * @param {FileId} fileId 
-   * @returns {string}
+   * @returns {Uint8Array}
    */
   async getContents(
     fileId: FileId
-  ): Promise<string> {
-    return new Promise(async(resolve, reject) => {
+  ): Promise<Uint8Array> {
+    return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
 
         // Creating the transaction...
         const transaction = new FileContentsQuery()
-            .setFileId(fileId);
+          .setFileId(fileId);
 
         // Signing the transaction...
         const contents = await transaction.execute(client);
-        resolve(contents.toString());
-      } catch(error) {
+        resolve(contents);
+      } catch (error) {
         reject(error);
       }
     });
@@ -255,18 +255,18 @@ export class HfsService {
   async getInfos(
     fileId: FileId
   ): Promise<FileInfo> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
-        
+
         // Creating the transaction...
         const transaction = new FileInfoQuery()
-            .setFileId(fileId);
+          .setFileId(fileId);
 
         // Signing the transaction...
         const infos = await transaction.execute(client);
         resolve(infos);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
