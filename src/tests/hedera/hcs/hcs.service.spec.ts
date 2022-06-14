@@ -76,21 +76,21 @@ describe('HcsService', () => {
       await expect(service.createTopic(account.keys, account.keys, account.memo)).resolves.toBeInstanceOf(TopicId);
     });
 
-     test('returns TopicId if params adminKey and submitKey are not present', async () => {
-       await expect(service.createTopic(null, null, account.memo)).resolves.toBeInstanceOf(TopicId);
-     });
+    test('returns TopicId if params adminKey and submitKey are not present', async () => {
+      await expect(service.createTopic(null, null, account.memo)).resolves.toBeInstanceOf(TopicId);
+    });
 
-     test('returns TopicId if param submitKey is not present', async () => {
-       await expect(service.createTopic(account.keys, null, account.memo)).resolves.toBeInstanceOf(TopicId);
-     });
+    test('returns TopicId if param submitKey is not present', async () => {
+      await expect(service.createTopic(account.keys, null, account.memo)).resolves.toBeInstanceOf(TopicId);
+    });
 
-     test('returns TopicId if param adminKey is not present', async () => {
-       await expect(service.createTopic(null, account.keys, account.memo)).resolves.toBeInstanceOf(TopicId);
-     });
+    test('returns TopicId if param adminKey is not present', async () => {
+      await expect(service.createTopic(null, account.keys, account.memo)).resolves.toBeInstanceOf(TopicId);
+    });
 
-     test('returns TopicId even if no param is present', async () => {
-       await expect(service.createTopic(null, null, null)).resolves.toBeInstanceOf(TopicId);
-     });
+    test('returns TopicId even if no param is present', async () => {
+      await expect(service.createTopic(null, null, null)).resolves.toBeInstanceOf(TopicId);
+    });
   });
 
   describe(`updateTopic`, () => {
