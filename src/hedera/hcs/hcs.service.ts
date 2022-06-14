@@ -15,7 +15,7 @@ import {
 } from '@hashgraph/sdk';
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientService } from '../client/client.service';
-
+//
 /**
  * Injectable
  */
@@ -49,8 +49,7 @@ export class HcsService {
     submitKey?: Key | KeyList,
     memo?: string
   ): Promise<TopicId | null> {
-    return new Promise(async (resolve, reject) => {
-      try {
+    return new Promise(async (resolve) => {
         const client = this.clientService.getClient();
 
         // creating the transaction...
@@ -82,9 +81,6 @@ export class HcsService {
         // finally, fetching the topicId from the response...
         const receipt = await txResponse.getReceipt(client);
         resolve(receipt.topicId);
-      } catch (error) {
-        reject(error);
-      }
     });
   }
 
@@ -211,7 +207,7 @@ export class HcsService {
     topicId: TopicId,
     message: string | Uint8Array,
     submitKey?: PrivateKey
-  ): Promise<string | undefined> {
+  ): Promise<Status | undefined> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -234,7 +230,7 @@ export class HcsService {
         }
         // finally, fetching the status...
         const receipt = await txResponse.getReceipt(client);
-        resolve(receipt.topicSequenceNumber?.toString());
+        resolve(receipt.status);
       } catch (error) {
         reject(error);
       }
