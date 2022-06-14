@@ -25,9 +25,12 @@ describe('HcsService', () => {
   let account = {
     id: AccountId.fromString(process.env.DEV_ACCOUNT_ID),
     keys: PrivateKey.fromString(process.env.DEV_ACCOUNT_PRIVATE_KEY),
-    memo: "memo",
-    topicId: TopicId.fromString(process.env.TOPIC_ID),
-    callback: <any>TopicMessage
+    memo: "memo"
+  };
+
+  let topic = {
+    id: null,
+    callback: null
   };
 
   beforeEach(async () => {
@@ -43,7 +46,8 @@ describe('HcsService', () => {
           useFactory: async (configService: ConfigService) => ({
             operators: [configService.get<Array<Operator>>(`settings.${configService.get<string>('environment')}.node`)],
             mirrorNode: configService.get<MirrorNode>(`settings.${configService.get<string>('environment')}.mirrorNode`),
-            network: configService.get<string>('environment') == 'development' ? 'testnet' : 'mainnet'
+            custom: configService.get<MirrorNode>(`settings.${configService.get<string>('environment')}.custom`),
+            network: configService.get<string>('environment')
           }),
         }),
         RestModule.forRootAsync({
@@ -73,7 +77,8 @@ describe('HcsService', () => {
 
   describe(`createTopic`, () => {
     test('returns TopicId if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.createTopic(account.keys, account.keys, account.memo)).resolves.toBeInstanceOf(TopicId);
+      topic.id = await service.createTopic(account.keys, account.keys, account.memo);
+      expect(topic.id).toBeInstanceOf(TopicId);
     });
 
     test('returns TopicId if params adminKey and submitKey are not present', async () => {
@@ -95,29 +100,29 @@ describe('HcsService', () => {
 
   describe(`updateTopic`, () => {
     test('returns Status if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.updateTopic(account.topicId, account.keys, account.keys, account.keys, account.memo)).resolves.toBeInstanceOf(Status);
+      await expect(service.updateTopic(topic.id, account.keys, account.keys, account.keys, account.memo)).resolves.toBeInstanceOf(Status);
     });
 
     test('returns Status if adminKey is not present', async () => {
-      await expect(service.updateTopic(account.topicId, account.keys, null, account.keys, account.memo)).resolves.toBeInstanceOf(Status);
+      await expect(service.updateTopic(topic.id, account.keys, null, account.keys, account.memo)).resolves.toBeInstanceOf(Status);
     });
 
     test('returns Status if submitKey is not present', async () => {
-      await expect(service.updateTopic(account.topicId, account.keys, account.keys, null, account.memo)).resolves.toBeInstanceOf(Status);
+      await expect(service.updateTopic(topic.id, account.keys, account.keys, null, account.memo)).resolves.toBeInstanceOf(Status);
     });
 
     test('returns Status if memo is not present', async () => {
-      await expect(service.updateTopic(account.topicId, account.keys, account.keys, account.keys, null)).resolves.toBeInstanceOf(Status);
+      await expect(service.updateTopic(topic.id, account.keys, account.keys, account.keys, null)).resolves.toBeInstanceOf(Status);
     });
 
     test('returns error if currentAdminKey is not present', async () => {
-      await expect(service.updateTopic(account.topicId, null, account.keys, account.keys, account.memo)).rejects.toThrow(Error);
+      await expect(service.updateTopic(topic.id, null, account.keys, account.keys, account.memo)).rejects.toThrow(Error);
     });
   });
 
   describe(`topicInfo`, () => {
     test('returns topicInfo if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.topicInfo(account.topicId)).resolves.toBeInstanceOf(TopicInfo);
+      await expect(service.topicInfo(topic.id)).resolves.toBeInstanceOf(TopicInfo);
     });
 
     test('returns error if topicId is not present', async () => {
@@ -127,11 +132,11 @@ describe('HcsService', () => {
 
   describe(`submitMessage`, () => {
     test('returns Status if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.submitMessage(account.topicId, account.memo, account.keys)).resolves.toBeInstanceOf(Status);
+      await expect(service.submitMessage(topic.id, account.memo, account.keys)).resolves.toBe('1');
     });
 
     test('returns Status if there is no submitKey', async () => {
-      await expect(service.submitMessage(account.topicId, account.memo, null)).resolves.toBeInstanceOf(Status);
+      await expect(service.submitMessage(topic.id, account.memo, null)).rejects.toThrow(Error);
     });
 
     test('returns error if topicId is not present', async () => {
@@ -141,21 +146,21 @@ describe('HcsService', () => {
 
   describe(`getMessages`, () => {
     test('returns subscription if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.getMessages(account.topicId, account.callback, 1, 1, 1)).resolves.toBeInstanceOf(SubscriptionHandle);
+      await expect(service.getMessages(topic.id, topic.callback, 1, 1, 1)).resolves.toBeInstanceOf(SubscriptionHandle);
     });
 
     test('returns error if topicId is not present', async () => {
-      await expect(service.getMessages(null, account.callback, 1, 1, 1)).rejects.toThrow(Error);
+      await expect(service.getMessages(null, topic.callback, 1, 1, 1)).rejects.toThrow(Error);
     });
   });
 
   describe(`deleteTopic`, () => {
     test('returns Status if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.deleteTopic(account.topicId, account.keys)).resolves.toBeInstanceOf(Status);
+      await expect(service.deleteTopic(topic.id, account.keys)).resolves.toBeInstanceOf(Status);
     });
 
     test('returns error if adminKey is not present', async () => {
-      await expect(service.deleteTopic(account.topicId, null)).rejects.toThrow(Error);
+      await expect(service.deleteTopic(topic.id, null)).rejects.toThrow(Error);
     });
   });
 });

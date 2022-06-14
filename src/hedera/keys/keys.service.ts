@@ -25,9 +25,13 @@ export class KeysService {
    * @returns {PrivateKey}
    */
   generateKey(): Promise<PrivateKey> {
-    return new Promise(async (resolve) => {
-      const key = await PrivateKey.generate();
-      resolve(key);
+    return new Promise(async (resolve, reject) => {
+      try {
+        const key = await PrivateKey.generate();
+        resolve(key);
+      } catch(error) {
+        reject(error);
+      }
     });
   }
 
@@ -44,39 +48,43 @@ export class KeysService {
     threshold?: number
   ): Promise<PrivateKeyList> {
     return new Promise(async (resolve, reject) => {
-      let publicKeyList: any = [];
-      // if an array of keys is provided, we use it...
-      if (publicKeys) {
-        publicKeys.forEach(key => {
-          publicKeyList.push(PublicKey.fromString(key));
-        });
-
-        resolve({
-          privateKeys: [],
-          keyList: new KeyList(publicKeyList, threshold ? threshold : null)
-        });
-      }
-      // otherwise, we generate the keys we need...
-      else {
-        let privateKeys: any = [];
-
-        if (length) {
-          [...Array(length).keys()].forEach(() => {
-            let key = PrivateKey.generate();
-            privateKeys.push(key);
-            publicKeyList.push(key.publicKey);
+      try {
+        let publicKeyList: any = [];
+        // if an array of keys is provided, we use it...
+        if (publicKeys) {
+          publicKeys.forEach(key => {
+            publicKeyList.push(PublicKey.fromString(key));
           });
-
-          resolve({
-            privateKeys: privateKeys,
-            keyList: new KeyList(publicKeyList, threshold ? threshold : null)
-          });
-        } else {
+  
           resolve({
             privateKeys: [],
-            keyList: new KeyList([])
+            keyList: new KeyList(publicKeyList, threshold ? threshold : null)
           });
         }
+        // otherwise, we generate the keys we need...
+        else {
+          let privateKeys: any = [];
+  
+          if (length) {
+            [...Array(length).keys()].forEach(() => {
+              let key = PrivateKey.generate();
+              privateKeys.push(key);
+              publicKeyList.push(key.publicKey);
+            });
+  
+            resolve({
+              privateKeys: privateKeys,
+              keyList: new KeyList(publicKeyList, threshold ? threshold : null)
+            });
+          } else {
+            resolve({
+              privateKeys: [],
+              keyList: new KeyList([])
+            });
+          }
+        }        
+      } catch(error) {
+        reject(error);
       }
     });
   }

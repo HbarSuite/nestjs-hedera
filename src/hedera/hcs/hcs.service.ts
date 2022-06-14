@@ -15,7 +15,7 @@ import {
 } from '@hashgraph/sdk';
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientService } from '../client/client.service';
-//
+
 /**
  * Injectable
  */
@@ -49,38 +49,42 @@ export class HcsService {
     submitKey?: Key | KeyList,
     memo?: string
   ): Promise<TopicId | null> {
-    return new Promise(async (resolve) => {
-      const client = this.clientService.getClient();
+    return new Promise(async (resolve, reject) => {
+      try {
+        const client = this.clientService.getClient();
 
-      // creating the transaction...
-      const transaction = new TopicCreateTransaction();
-      let txResponse = null;
-      // setting the admin key, if any...
-      if (adminKey) {
-        transaction.setAdminKey(adminKey);
+        // creating the transaction...
+        const transaction = new TopicCreateTransaction();
+        let txResponse = null;
+        // setting the admin key, if any...
+        if (adminKey) {
+          transaction.setAdminKey(adminKey);
+        }
+        // setting the submit key, if any...
+        if (submitKey) {
+          transaction.setSubmitKey(submitKey);
+        }
+        // setting the topic memo, if any...
+        if (memo) {
+          transaction.setTopicMemo(memo);
+        }
+        // freezing the transaction...
+        transaction.freezeWith(client);
+        // if there is an admin key, transaction must be signed...
+        if (adminKey) {
+          const signTx = await transaction.sign(adminKey);
+          txResponse = await signTx.execute(client);
+        }
+        // otherwise, we can just execute it...
+        else {
+          txResponse = await transaction.execute(client);
+        }
+        // finally, fetching the topicId from the response...
+        const receipt = await txResponse.getReceipt(client);
+        resolve(receipt.topicId);
+      } catch(error) {
+        reject(error);
       }
-      // setting the submit key, if any...
-      if (submitKey) {
-        transaction.setSubmitKey(submitKey);
-      }
-      // setting the topic memo, if any...
-      if (memo) {
-        transaction.setTopicMemo(memo);
-      }
-      // freezing the transaction...
-      transaction.freezeWith(client);
-      // if there is an admin key, transaction must be signed...
-      if (adminKey) {
-        const signTx = await transaction.sign(adminKey);
-        txResponse = await signTx.execute(client);
-      }
-      // otherwise, we can just execute it...
-      else {
-        txResponse = await transaction.execute(client);
-      }
-      // finally, fetching the topicId from the response...
-      const receipt = await txResponse.getReceipt(client);
-      resolve(receipt.topicId);
     });
   }
 
@@ -207,7 +211,7 @@ export class HcsService {
     topicId: TopicId,
     message: string | Uint8Array,
     submitKey?: PrivateKey
-  ): Promise<Status | undefined> {
+  ): Promise<string | undefined> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -230,7 +234,7 @@ export class HcsService {
         }
         // finally, fetching the status...
         const receipt = await txResponse.getReceipt(client);
-        resolve(receipt.status);
+        resolve(receipt.topicSequenceNumber?.toString());
       } catch (error) {
         reject(error);
       }

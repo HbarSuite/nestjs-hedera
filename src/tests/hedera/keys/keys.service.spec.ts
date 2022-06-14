@@ -36,7 +36,8 @@ describe('KeysService', () => {
           useFactory: async (configService: ConfigService) => ({
             operators: [configService.get<Array<Operator>>(`settings.${configService.get<string>('environment')}.node`)],
             mirrorNode: configService.get<MirrorNode>(`settings.${configService.get<string>('environment')}.mirrorNode`),
-            network: configService.get<string>('environment') == 'development' ? 'testnet' : 'mainnet'
+            custom: configService.get<MirrorNode>(`settings.${configService.get<string>('environment')}.custom`),
+            network: configService.get<string>('environment')
           }),
         }),
         RestModule.forRootAsync({

@@ -24,13 +24,13 @@ describe('HtsService', () => {
 
   let account = {
     id: AccountId.fromString(process.env.DEV_ACCOUNT_ID),
-    keys: PrivateKey.fromString(process.env.DEV_ACCOUNT_PRIVATE_KEY),
+    key: PrivateKey.fromString(process.env.DEV_ACCOUNT_PRIVATE_KEY),
     memo: "memo"
   };
 
   let receiver = {
     id: AccountId.fromString(process.env.DEV_OPERATOR_ACCOUNT_ID),
-    keys: PrivateKey.fromString(process.env.DEV_OPERATOR_PRIVATE_KEY)
+    key: PrivateKey.fromString(process.env.DEV_OPERATOR_PRIVATE_KEY)
   }
 
   let token = {
@@ -42,9 +42,12 @@ describe('HtsService', () => {
   let nft = {
     id: TokenId.fromString(process.env.NFT_TOKEN_ID),
     supplyKey: PrivateKey.fromString(process.env.NFT_TOKEN_SUPPLY_KEY),
-    cid: process.env.NFT_CID,
-    serialNumber: 1
+    treasury: AccountId.fromString(process.env.NFT_TOKEN_TREASURY),
+    privateKey: PrivateKey.fromString(process.env.NFT_TOKEN_TREASURY_KEY),
+    cid: 'any_ipfs_string'
   }
+
+  let mintedNft = null;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -59,7 +62,8 @@ describe('HtsService', () => {
           useFactory: async (configService: ConfigService) => ({
             operators: [configService.get<Array<Operator>>(`settings.${configService.get<string>('environment')}.node`)],
             mirrorNode: configService.get<MirrorNode>(`settings.${configService.get<string>('environment')}.mirrorNode`),
-            network: configService.get<string>('environment') == 'development' ? 'testnet' : 'mainnet'
+            custom: configService.get<MirrorNode>(`settings.${configService.get<string>('environment')}.custom`),
+            network: configService.get<string>('environment')
           }),
         }),
         RestModule.forRootAsync({
@@ -89,21 +93,21 @@ describe('HtsService', () => {
 
   describe(`associateToken`, () => {
     test('returns Status if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.associateToken(account.id, token.id, account.keys)).resolves.toBeInstanceOf(Status);
+      await expect(service.associateToken(account.id, token.id, account.key)).resolves.toBeInstanceOf(Status);
     });
 
     test('returns error if params are not valid, or if Hedera crashes', async () => {
-      await expect(service.associateToken(account.id, null, account.keys)).rejects.toThrow(Error);
+      await expect(service.associateToken(account.id, null, account.key)).rejects.toThrow(Error);
     });
   });
 
   describe(`dissociateToken`, () => {
     test('returns Status if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.dissociateToken(account.id, token.id, account.keys)).resolves.toBeInstanceOf(Status);
+      await expect(service.dissociateToken(account.id, token.id, account.key)).resolves.toBeInstanceOf(Status);
     });
 
     test('returns error if params are not valid, or if Hedera crashes', async () => {
-      await expect(service.associateToken(account.id, null, account.keys)).rejects.toThrow(Error);
+      await expect(service.dissociateToken(account.id, null, account.key)).rejects.toThrow(Error);
     });
   });
 
@@ -129,27 +133,20 @@ describe('HtsService', () => {
 
   describe(`mintNftToken`, () => {
     test('returns Receipt if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.mintNftToken(nft.id, nft.supplyKey, nft.cid)).resolves.toBeInstanceOf(TransactionReceipt);
+      let receipt = <TransactionReceipt> await service.mintNftToken(nft.id, nft.cid, nft.supplyKey);
+      mintedNft = receipt.serials[0].toString();
+
+      expect(receipt).toBeInstanceOf(TransactionReceipt);
     });
 
     test('returns error if params are not valid, or if Hedera crashes', async () => {
-      await expect(service.mintNftToken(nft.id, nft.supplyKey, null)).rejects.toThrow(Error);
-    });
-  });
-
-  describe(`burnNftToken`, () => {
-    test('returns Receipt if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.burnNftToken(nft.id, nft.serialNumber, nft.supplyKey)).resolves.toBeInstanceOf(TransactionReceipt);
-    });
-
-    test('returns error if params are not valid, or if Hedera crashes', async () => {
-      await expect(service.burnNftToken(nft.id, nft.serialNumber, null)).rejects.toThrow(Error);
+      await expect(service.mintNftToken(nft.id, null, nft.supplyKey)).rejects.toThrow(Error);
     });
   });
 
   describe(`getNftInfo`, () => {
     test('returns Receipt if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.getNftInfo(nft.id, nft.serialNumber)).resolves.toBeInstanceOf(Array<TokenNftInfo>);
+      await expect(service.getNftInfo(nft.id, mintedNft)).resolves.toBeInstanceOf(Array<TokenNftInfo>);
     });
 
     test('returns error if params are not valid, or if Hedera crashes', async () => {
@@ -157,29 +154,39 @@ describe('HtsService', () => {
     });
   });
 
-  describe(`transferHbar`, () => {
-    test('returns Object if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.transferHbar(1, account.id, receiver.id, account.memo, account.keys)).resolves.toBeInstanceOf(Object);
+  describe(`burnNftToken`, () => {
+    test('returns Receipt if params are valid, or Hedera does NOT crashes', async () => {
+      await expect(service.burnNftToken(nft.id, mintedNft, nft.supplyKey)).resolves.toBeInstanceOf(TransactionReceipt);
     });
 
     test('returns error if params are not valid, or if Hedera crashes', async () => {
-      await expect(service.transferHbar(1, account.id, null, account.memo, account.keys)).rejects.toThrow(Error);
+      await expect(service.burnNftToken(nft.id, mintedNft, null)).rejects.toThrow(Error);
+    });
+  });
+
+  describe(`transferHbar`, () => {
+    test('returns Object if params are valid, or Hedera does NOT crashes', async () => {
+      await expect(service.transferHbar(1, account.id, receiver.id, account.memo, account.key)).resolves.toBeInstanceOf(Object);
+    });
+
+    test('returns error if params are not valid, or if Hedera crashes', async () => {
+      await expect(service.transferHbar(1, account.id, null, account.memo, account.key)).rejects.toThrow(Error);
     });
   });
 
   describe(`transferToken`, () => {
     test('returns transaction details if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.transferToken(token.id, account.id, receiver.id, 1, 4, account.memo, account.keys, 1)).resolves.toBeInstanceOf(Object);
+      await expect(service.transferToken(token.id, account.id, receiver.id, 1, 4, account.memo, account.key, 1)).resolves.toBeInstanceOf(Object);
     });
 
     test('returns error if params are not valid, or if Hedera crashes', async () => {
-      await expect(service.transferToken(token.id, account.id, receiver.id, null, null, account.memo, account.keys, 1)).rejects.toThrow(Error);
+      await expect(service.transferToken(token.id, account.id, receiver.id, null, null, account.memo, account.key, 1)).rejects.toThrow(Error);
     });
   });
 
   describe(`atomicSwap`, () => {
     test('returns transaction details if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.atomicSwap(token.swaps, account.memo, account.keys)).resolves.toBeInstanceOf(Object);
+      await expect(service.atomicSwap(token.swaps, account.memo, account.key)).resolves.toBeInstanceOf(Object);
     });
 
     test('returns transaction to wrap into a schedule if params are valid, or Hedera does NOT crashes', async () => {
@@ -193,11 +200,11 @@ describe('HtsService', () => {
 
   describe(`transferNftToken`, () => {
     test('returns transaction details if params are valid, or Hedera does NOT crashes', async () => {
-      await expect(service.transferNftToken(nft.id, account.id, receiver.id, 1, account.keys)).resolves.toBeInstanceOf(Object);
+      await expect(service.transferNftToken(nft.id, nft.treasury, account.id, 1, nft.privateKey)).resolves.toBeInstanceOf(Object);
     });
 
     test('returns error if params are not valid, or if Hedera crashes', async () => {
-      await expect(service.transferNftToken(nft.id, account.id, receiver.id, 1, account.keys)).rejects.toThrow(Error);
+      await expect(service.transferNftToken(nft.id, nft.treasury, account.id, 1, nft.privateKey)).rejects.toThrow(Error);
     });
   });
 });

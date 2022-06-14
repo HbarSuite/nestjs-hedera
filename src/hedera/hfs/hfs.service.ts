@@ -229,7 +229,7 @@ export class HfsService {
    */
   async getContents(
     fileId: FileId
-  ): Promise<Uint8Array> {
+  ): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
         const client = this.clientService.getClient();
@@ -240,7 +240,7 @@ export class HfsService {
 
         // Signing the transaction...
         const contents = await transaction.execute(client);
-        resolve(contents);
+        resolve(contents.toString());
       } catch (error) {
         reject(error);
       }

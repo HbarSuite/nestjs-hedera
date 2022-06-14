@@ -59,7 +59,6 @@ export class HtsService {
         // generating random number from 3 to 9, as a workound for offline signature...
         let nodeAccountId = Math.floor(Math.random() * (9 - 3 + 1) + 3);
 
-        console.log("using account ID", (new AccountId(nodeAccountId)).toString());
         const transaction = await new TokenAssociateTransaction()
           // setting single node accountId, as a workound for offline signature...
           .setNodeAccountIds([new AccountId(nodeAccountId)])
@@ -189,8 +188,8 @@ export class HtsService {
    */
   async mintNftToken(
     tokenId: TokenId,
-    supplyKey: PrivateKey | Array<PrivateKey>,
-    CID: string
+    CID: string,
+    supplyKey: PrivateKey | Array<PrivateKey>
   ): Promise<TransactionReceipt | Transaction> {
     return new Promise(async (resolve, reject) => {
       try {
