@@ -1,30 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HfsService } from '../../../hedera/hfs/hfs.service';
 import {
-  FileAppendTransaction,
-  FileContentsQuery,
-  FileCreateTransaction,
-  FileDeleteTransaction,
   FileId,
   FileInfo,
-  FileInfoQuery,
-  FileUpdateTransaction,
-  Hbar,
   PrivateKey,
   AccountId,
   TopicId,
   TopicMessage,
   Status
 } from '@hashgraph/sdk';
-import { Injectable, Logger } from '@nestjs/common';
-import { ClientService } from '../../../hedera/client/client.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../../../config/configuration';
 import { ClientModule } from '../../../hedera/client/client.module';
 import { Operator } from '../../../types/operator.types';
 import { MirrorNode } from '../../../types/mirror.types';
 import { RestModule } from '../../../hedera/rest/rest.module';
-import { buffer } from 'stream/consumers';
 
 const dotenv = require('dotenv');
 dotenv.config();
